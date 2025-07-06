@@ -1,0 +1,33 @@
+/* resources/css/app.css */
+
+@font-face {
+    font-family: 'GT Walsheim Pro';
+    /* Nama file persis dari screenshot Anda */
+    src: url('/fonts/GTWalsheim/GT-Walsheim-Regular-Trial-BF651b7c67342f.otf') format('opentype');
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GT Walsheim Pro';
+    /* Nama file persis dari screenshot Anda */
+    src: url('/fonts/GTWalsheim/GT-Walsheim-Medium-Trial-BF651b7c69eff5.otf') format('opentype');
+    font-weight: 500; /* Medium */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GT Walsheim Pro';
+    /* Nama file persis dari screenshot Anda */
+    src: url('/fonts/GTWalsheim/GT-Walsheim-Bold-Trial-BF651b7c7358e0.otf') format('opentype');
+    font-weight: 700; /* Bold */
+    font-style: normal;
+}
+
+/* ... tambahkan @font-face lain jika perlu ... */
+
+
+/* Kode Tailwind bawaan */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

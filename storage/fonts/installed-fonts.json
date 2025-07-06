@@ -1,0 +1,12 @@
+{
+    "poppins": {
+        "500": "D:\\10. Development Coding\\Laravel\\network-dashboard\\storage\\fonts\/poppins_500_a8989f7b44a711b1b2ef07347b37ec13",
+        "300": "D:\\10. Development Coding\\Laravel\\network-dashboard\\storage\\fonts\/poppins_300_6803ad4fe8fecdbaeff0adce8839c330",
+        "normal": "D:\\10. Development Coding\\Laravel\\network-dashboard\\storage\\fonts\/poppins_normal_c6711d47669d7317aa5bfeda9f1dded3",
+        "600": "D:\\10. Development Coding\\Laravel\\network-dashboard\\storage\\fonts\/poppins_600_8766355d2de6e5a80a8dfebc31aeaedf",
+        "bold": "poppins_bold_e65267788fadc7206923de221454a2be"
+    },
+    "alex brush": {
+        "normal": "alex_brush_normal_d5f743f65d1e340bdaedc055d560e642"
+    }
+}
