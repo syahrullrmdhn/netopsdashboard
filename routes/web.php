@@ -58,7 +58,7 @@ Route::middleware('auth')->group(function () {
     // RFO (Request for Outage)
     Route::get('tickets/{ticket}/rfo', [TicketController::class, 'rfo'])->name('tickets.rfo');
     Route::get('tickets/{ticket}/rfo/pdf', [TicketController::class, 'rfoPdf'])->name('tickets.rfo.pdf');
-    Route::post('tickets/{ticket}/rfo/pdf', [TicketController::class, 'rfoPdf']); // Name is identical to GET, consider if this is intended
+    Route::post('tickets/{ticket}/rfo/pdf', [TicketController::class, 'rfoPdf']); // Name sama dengan GET, pastikan ini memang diinginkan
 
     // laporan & analitik
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
@@ -79,11 +79,15 @@ Route::middleware('auth')->group(function () {
 
     // Manajemen pengguna (dengan otorisasi 'manage users')
     Route::middleware(['can:manage users'])->group(function () {
+        // reset password user
         Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.resetPassword');
+        // CRUD user
         Route::resource('users', UserController::class);
         
+        // assign roles ke user
         Route::get('users/{user}/roles', [RoleController::class, 'assignRoleForm'])->name('users.roles.edit');
         Route::post('users/{user}/roles', [RoleController::class, 'assignRole'])->name('users.roles.update');
+        // CRUD role
         Route::resource('roles', RoleController::class);
     });
 
@@ -95,13 +99,15 @@ Route::middleware('auth')->group(function () {
         Route::post('store-handover',  [NocController::class,'storeHandover'])->name('storeHandover');
         Route::get('history',          [NocController::class,'history'])->name('history');
     }); 
+
     // Escalation routes
-        Route::get('/escalations', [EscalationController::class, 'index'])
+    Route::get('/escalations', [EscalationController::class, 'index'])
          ->name('escalations.index')
          ->middleware('can:manage escalation');
     Route::post('/escalations', [EscalationController::class, 'store'])
          ->name('escalations.store')
          ->middleware('can:manage escalation');
+
     // Email settings
     Route::middleware(['can:manage settings'])->group(function(){
         Route::get('settings/mail', [EmailSettingsController::class,'edit'])->name('settings.mail.edit');

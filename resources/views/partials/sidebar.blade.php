@@ -109,7 +109,17 @@
   </x-nav-link>
 @endcan
 
+        {{-- === MENU ROLE MANAGEMENT === --}}
+        @can('manage roles')
+            <x-nav-link href="{{ route('roles.index') }}"
+                        :active="request()->routeIs('roles*')"
+                        class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">
+                <x-heroicon-o-user-circle class="w-5 h-5 text-gray-400 group-hover:text-indigo-500"/>
+                <span class="font-medium">Role Management</span>
+            </x-nav-link>
+        @endcan
 
+        {{-- === MENU USER MANAGEMENT === --}}
         @can('manage users')
             <x-nav-link href="{{ route('users.index') }}"
                         :active="request()->routeIs('users*')"
@@ -118,6 +128,7 @@
                 <span class="font-medium">User Management</span>
             </x-nav-link>
         @endcan
+
     </nav>
 
     {{-- User Profile / Sign Out --}}
