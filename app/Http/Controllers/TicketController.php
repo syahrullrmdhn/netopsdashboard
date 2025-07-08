@@ -18,33 +18,34 @@ class TicketController extends Controller
     // 1) LIST & CRUD
     // ─────────────────────────────────────────────────────
 
-public function index(Request $request)
-{
-    $search = $request->input('search');
-    $status = $request->input('status');
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $status = $request->input('status');
 
-    $tickets = Ticket::with(['customer.supplier','user','updates'])
-        ->when($search, function($query, $search) {
-            $query->where(function($q) use ($search) {
-                $q->where('ticket_number', 'like', "%{$search}%")
-                  ->orWhere('supplier_ticket_number', 'like', "%{$search}%")
-                  ->orWhereHas('customer', function($q2) use ($search) {
-                      $q2->where('customer', 'like', "%{$search}%");
-                  });
-            });
-        })
-        ->when($status === 'open', function($query) {
-            $query->whereNull('end_time');
-        })
-        ->when($status === 'closed', function($query) {
-            $query->whereNotNull('end_time');
-        })
-        ->latest('id')
-        ->paginate(15)
-        ->appends($request->only('search','status'));
+        $tickets = Ticket::with(['customer.supplier','user','updates'])
+            ->when($search, function($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('ticket_number', 'like', "%{$search}%")
+                      ->orWhere('supplier_ticket_number', 'like', "%{$search}%")
+                      ->orWhere('issue_type', 'like', "%{$search}%")
+                      ->orWhereHas('customer', function($q2) use ($search) {
+                          $q2->where('customer', 'like', "%{$search}%");
+                      });
+                });
+            })
+            ->when($status === 'open', function($query) {
+                $query->whereNull('end_time');
+            })
+            ->when($status === 'closed', function($query) {
+                $query->whereNotNull('end_time');
+            })
+            ->latest('id')
+            ->paginate(15)
+            ->appends($request->only('search','status'));
 
-    return view('tickets.index', compact('tickets', 'search', 'status'));
-}
+        return view('tickets.index', compact('tickets', 'search', 'status'));
+    }
 
     public function create()
     {
@@ -253,7 +254,6 @@ public function index(Request $request)
                          ->with('warning',$msgWarn);
     }
 
-
     public function exportTemplate()
     {
         $headers = [
@@ -277,7 +277,7 @@ public function index(Request $request)
     {
         $writer = WriterEntityFactory::createXLSXWriter();
         $fname  = 'tickets-'.now()->format('Ymd_His').'.xlsx';
-        $tmp    = storage_path("app/tmp_$fname");
+        $tmp    = storage_path("app/tmp_{$fname}");
         $writer->openToFile($tmp);
 
         $headers = [
@@ -323,7 +323,6 @@ public function index(Request $request)
 
         return response()->download($tmp,$fname)->deleteFileAfterSend(true);
     }
-
 
     // ─────────────────────────────────────────────────────
     // 4) HELPERS
