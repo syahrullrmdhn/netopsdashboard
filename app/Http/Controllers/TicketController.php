@@ -2,27 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ticket;
 use Illuminate\Http\Request;
+use App\Models\Ticket;
+use App\Models\Customer;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Log;
 
 class TicketController extends Controller
 {
-    public function index()
-    {
-        $tickets = Ticket::with(['customer.supplier', 'user', 'updates'])
-            ->latest('open_date')
-            ->paginate(15);
+    // ─────────────────────────────────────────────────────
+    // 1) LIST & CRUD
+    // ─────────────────────────────────────────────────────
 
-        return view('tickets.index', compact('tickets'));
-    }
+public function index(Request $request)
+{
+    $search = $request->input('search');
+    $status = $request->input('status');
+
+    $tickets = Ticket::with(['customer.supplier','user','updates'])
+        ->when($search, function($query, $search) {
+            $query->where(function($q) use ($search) {
+                $q->where('ticket_number', 'like', "%{$search}%")
+                  ->orWhere('supplier_ticket_number', 'like', "%{$search}%")
+                  ->orWhereHas('customer', function($q2) use ($search) {
+                      $q2->where('customer', 'like', "%{$search}%");
+                  });
+            });
+        })
+        ->when($status === 'open', function($query) {
+            $query->whereNull('end_time');
+        })
+        ->when($status === 'closed', function($query) {
+            $query->whereNotNull('end_time');
+        })
+        ->latest('id')
+        ->paginate(15)
+        ->appends($request->only('search','status'));
+
+    return view('tickets.index', compact('tickets', 'search', 'status'));
+}
 
     public function create()
     {
-        // Kalau butuh data customers di form, silakan load dan lempar ke view
-        // $customers = \App\Models\Customer::orderBy('customer')->get();
-        // return view('tickets.create', compact('customers'));
-        return view('tickets.create');
+        $customers = Customer::orderBy('customer')
+                             ->get(['id','customer','cid_abh']);
+        return view('tickets.create', compact('customers'));
     }
 
     public function store(Request $request)
@@ -40,20 +68,21 @@ class TicketController extends Controller
             'alert'                  => 'sometimes|boolean',
         ]);
 
-        $data['user_id']      = auth()->id();
-        $data['alert']        = $request->has('alert');
-        $data['sla_duration'] = 0;
+        $data += [
+            'user_id'      => auth()->id(),
+            'alert'        => $request->has('alert'),
+            'sla_duration' => 0,
+        ];
 
-        // Ticket number otomatis diisi di Model
         $ticket = Ticket::create($data);
 
         return redirect()->route('tickets.show', $ticket)
-            ->with('success', 'Ticket created.');
+                         ->with('success','Ticket created.');
     }
 
     public function show(Ticket $ticket)
     {
-        $ticket->load(['customer.supplier', 'user', 'updates.user']);
+        $ticket->load(['customer.supplier','user','updates.user']);
         return view('tickets.show', compact('ticket'));
     }
 
@@ -71,35 +100,280 @@ class TicketController extends Controller
             'alert'                  => 'sometimes|boolean',
         ]);
 
-        $ticket->update($data + ['alert' => $request->has('alert')]);
+        $ticket->update($data + ['alert'=>$request->has('alert')]);
 
-        return back()->with('success', 'Ticket updated.');
+        return back()->with('success','Ticket updated.');
     }
 
     public function close(Ticket $ticket)
     {
-        $ticket->update(['end_time' => now()]);
-        return back()->with('success', 'Ticket closed.');
+        $ticket->update(['end_time'=>now()]);
+        return back()->with('success','Ticket closed.');
+    }
+
+
+    // ─────────────────────────────────────────────────────
+    // 2) RFO Preview + PDF
+    // ─────────────────────────────────────────────────────
+
+    /**
+     * Show the HTML RFO in‐browser.
+     */
+    public function rfo(Ticket $ticket)
+    {
+        $ticket->load(['customer.supplier','user','updates.user']);
+        return view('tickets.rfo-pdf', compact('ticket'));
     }
 
     /**
-     * Generate PDF RFO
+     * Download the RFO as a PDF.
      */
     public function rfoPdf(Request $request, Ticket $ticket)
     {
-        $ticket->load(['customer.supplier', 'user', 'updates.user']);
+        $ticket->load(['customer.supplier','user','updates.user']);
 
-        // Override dengan value terbaru dari modal jika ada
+        // allow overriding from modal
         $ticket->problem_detail    = $request->input('problem_detail',    $ticket->problem_detail);
         $ticket->action_taken      = $request->input('action_taken',      $ticket->action_taken);
         $ticket->preventive_action = $request->input('preventive_action', $ticket->preventive_action);
 
         $pdf = Pdf::loadView('tickets.rfo-pdf', compact('ticket'))
-            ->setPaper('a4', 'portrait');
+                  ->setPaper('a4','portrait');
 
         return $pdf->download("RFO-{$ticket->ticket_number}.pdf");
     }
 
-    // Tambahan: jika ada method escalate, update, dsb
-    // public function escalate(Request $request, Ticket $ticket) { ... }
+
+    // ─────────────────────────────────────────────────────
+    // 3) IMPORT / EXPORT Excel via Spout
+    // ─────────────────────────────────────────────────────
+
+    public function import(Request $request)
+    {
+        $request->validate(['file'=>'required|file|mimes:xlsx,xls']);
+        $ext    = strtolower($request->file('file')->getClientOriginalExtension());
+        $reader = $ext==='xlsx'
+            ? ReaderEntityFactory::createXLSXReader()
+            : ReaderEntityFactory::createXLSReader();
+
+        $reader->open($request->file('file')->getRealPath());
+        $customers = Customer::select('id','customer','cid_abh')->get();
+
+        $saved = 0; $skipped = 0; $reasons = [];
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            $header=null; $dateKey=null; $rowNo=0;
+            foreach ($sheet->getRowIterator() as $row) {
+                $rowNo++;
+                $cells = $row->toArray();
+
+                if ($rowNo===1) {
+                    $header = array_map(fn($h)=>Str::slug($h,'_'), $cells);
+                    foreach (['date_start_time','open_date','start_date'] as $cand) {
+                        if (in_array($cand,$header,true)) {
+                            $dateKey=$cand; break;
+                        }
+                    }
+                    if (!$dateKey) {
+                        $reasons[] = "Sheet “{$sheet->getName()}”: missing start-date column.";
+                        break;
+                    }
+                    continue;
+                }
+                if (!$header) continue;
+
+                // map
+                $data = [];
+                foreach ($header as $i=>$col) {
+                    $val = $cells[$i] ?? null;
+                    $data[$col] = $val instanceof \DateTimeInterface
+                                 ? $val->format('Y-m-d H:i:s')
+                                 : trim((string)($val??''));
+                }
+
+                // validate start
+                if ($data[$dateKey]==='') {
+                    $this->logSkip($rowNo,'missing start-date',$reasons,$skipped);
+                    continue;
+                }
+                try {
+                    $start = Carbon::parse($data[$dateKey]);
+                } catch (\Exception $e) {
+                    $this->logSkip($rowNo,'invalid start-date format',$reasons,$skipped);
+                    continue;
+                }
+
+                // parse end (optional)
+                $end = null;
+                if (!empty($data['date_end_time'] ?? '')) {
+                    try { $end = Carbon::parse($data['date_end_time']); }
+                    catch (\Exception $e) { }
+                }
+
+                // fuzzy match customer
+                $cust = $this->matchCustomer($data, $customers);
+                if (!$cust) {
+                    $this->logSkip($rowNo,'customer not found',$reasons,$skipped);
+                    continue;
+                }
+
+                // create
+                $ticket = Ticket::create([
+                    'customer_id'            => $cust->id,
+                    'open_date'              => $start->toDateString(),
+                    'start_time'             => $start,
+                    'end_time'               => $end,
+                    'issue_type'             => $data['type_of_issue']           ?? null,
+                    'supplier_ticket_number' => $data['supplier_ticket_number'] ?? null,
+                    'problem_detail'         => $data['root_cause']             ?? null,
+                    'action_taken'           => $data['action_taken']           ?? null,
+                    'preventive_action'      => $data['preventive_action']      ?? null,
+                    'alert'                  => in_array(strtolower($data['status_rfo_send'] ?? ''), ['yes','true','1']),
+                ]);
+                $saved++;
+
+                if (!empty($data['chronology'])) {
+                    $ticket->updates()->create([
+                        'detail'  => $data['chronology'],
+                        'user_id' => auth()->id(),
+                    ]);
+                }
+            }
+        }
+
+        $reader->close();
+
+        $msgSuccess = "{$saved} ticket(s) imported successfully.";
+        $msgWarn    = $skipped
+            ? "{$skipped} row(s) skipped: ".implode(' | ', array_slice($reasons,0,5))
+            : null;
+
+        return redirect()->route('tickets.index')
+                         ->with('success',$msgSuccess)
+                         ->with('warning',$msgWarn);
+    }
+
+
+    public function exportTemplate()
+    {
+        $headers = [
+            'No','Customer','Suplier','CID ABH','CID Supplier',
+            'Type of Issue','ABH Ticket Number','Supplier Ticket Number',
+            'Status','Date/Start Time','Date/End Time','Duration','Timezone',
+            'On Duty','Root Cause','Action Taken','Chronology',
+            'Cordination To Customer','Cordination To Supplier','Status RFO Send',
+        ];
+
+        $writer = WriterEntityFactory::createXLSXWriter();
+        $tmp    = storage_path('app/tmp_template.xlsx');
+        $writer->openToFile($tmp);
+        $writer->addRow(WriterEntityFactory::createRowFromArray($headers));
+        $writer->close();
+
+        return response()->download($tmp,'ticket-template.xlsx')->deleteFileAfterSend(true);
+    }
+
+    public function exportTickets()
+    {
+        $writer = WriterEntityFactory::createXLSXWriter();
+        $fname  = 'tickets-'.now()->format('Ymd_His').'.xlsx';
+        $tmp    = storage_path("app/tmp_$fname");
+        $writer->openToFile($tmp);
+
+        $headers = [
+            'No','Customer','Suplier','CID ABH','CID Supplier',
+            'Type of Issue','ABH Ticket Number','Supplier Ticket Number',
+            'Status','Date/Start Time','Date/End Time','Duration','Timezone',
+            'On Duty','Root Cause','Action Taken','Chronology',
+            'Cordination To Customer','Cordination To Supplier','Status RFO Send',
+        ];
+        $writer->addRow(WriterEntityFactory::createRowFromArray($headers));
+
+        $i = 0;
+        $tickets = Ticket::with('customer.supplier','updates','user')
+                        ->orderBy('id')
+                        ->get();
+        foreach ($tickets as $t) {
+            $i++;
+            $row = [
+                $i,
+                optional($t->customer)->customer,
+                optional($t->customer->supplier)->nama_supplier,
+                optional($t->customer)->cid_abh,
+                optional($t->customer)->cid_supp,
+                $t->issue_type,
+                $t->ticket_number,
+                $t->supplier_ticket_number,
+                $t->end_time ? 'Closed' : 'Open',
+                optional($t->start_time)->format('Y-m-d H:i:s'),
+                optional($t->end_time)->format('Y-m-d H:i:s'),
+                ($t->start_time && $t->end_time)
+                    ? $t->end_time->diffInMinutes($t->start_time).'m' : '',
+                'Asia/Jakarta',
+                optional($t->user)->name,
+                $t->problem_detail,
+                $t->action_taken,
+                $t->updates->pluck('detail')->implode(' | '),
+                '', '', $t->alert ? 'YES':'NO',
+            ];
+            $writer->addRow(WriterEntityFactory::createRowFromArray($row));
+        }
+
+        $writer->close();
+
+        return response()->download($tmp,$fname)->deleteFileAfterSend(true);
+    }
+
+
+    // ─────────────────────────────────────────────────────
+    // 4) HELPERS
+    // ─────────────────────────────────────────────────────
+
+    protected function logSkip(int $row, string $why, array &$reasons, int &$skip)
+    {
+        $skip++;
+        Log::warning("ImportTickets: row {$row} skipped – {$why}");
+        if (count($reasons)<5) {
+            $reasons[] = "Row {$row}: {$why}";
+        }
+    }
+
+    protected function matchCustomer(array $row, $customers)
+    {
+        $cid  = $row['cid_abh']  ?? '';
+        $name = $row['customer'] ?? '';
+
+        // exact CID
+        if ($cid && ($c = $customers->firstWhere('cid_abh',$cid))) {
+            return $c;
+        }
+
+        // fuzzy by name ≥80%
+        $bestPct = 0; $best = null;
+        foreach ($customers as $c) {
+            similar_text(mb_strtolower($name), mb_strtolower($c->customer), $pct);
+            if ($pct > $bestPct) {
+                $bestPct = $pct; $best = $c;
+            }
+        }
+        if ($bestPct >= 80) {
+            Log::info("ImportTickets: fuzzy-name '{$name}'→'{$best->customer}' ({$bestPct}%)");
+            return $best;
+        }
+
+        // fuzzy by CID (Levenshtein ≤2)
+        $bestDist = PHP_INT_MAX; $bestCid = null;
+        foreach ($customers as $c) {
+            $d = levenshtein($cid, $c->cid_abh);
+            if ($d < $bestDist) {
+                $bestDist = $d; $bestCid = $c;
+            }
+        }
+        if ($bestDist <= 2) {
+            Log::info("ImportTickets: fuzzy-cid '{$cid}'→'{$bestCid->cid_abh}' (lev={$bestDist})");
+            return $bestCid;
+        }
+
+        return null;
+    }
 }
