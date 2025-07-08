@@ -16,8 +16,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        // Mengatur 'Raleway' sebagai font sans-serif utama untuk seluruh proyek
-        sans: ['Raleway', 'ui-sans-serif', 'system-ui'],
+        // Mengatur 'Mulish' sebagai font sans-serif utama untuk seluruh proyek
+        sans: ['Mulish'],
       },
     },
   },
