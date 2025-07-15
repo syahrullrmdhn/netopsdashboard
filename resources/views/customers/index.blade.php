@@ -133,7 +133,6 @@
           </div>
         </div>
 
-        {{-- Table --}}
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm divide-y divide-gray-200">
             <thead class="bg-gray-100">
@@ -146,7 +145,6 @@
                 <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase">Status</th>
                 <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase">Documents</th>
                 <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase">Network Info</th>
-                <th class="px-4 py-3 text-right font-semibold text-gray-600 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -192,21 +190,6 @@
                       <li><strong>Prefix:</strong> {{ $cust->prefix ?? '–' }}</li>
                       <li><strong>XC-ID:</strong> {{ $cust->xconnect_id ?? '–' }}</li>
                     </ul>
-                  </td>
-                  <td class="px-4 py-3 text-right">
-                    <button
-                      x-on:click="/* wire up your edit logic here */"
-                      class="text-indigo-600 hover:text-indigo-900"
-                    >Edit</button>
-                    <form
-                      action="{{ route('customers.destroy', $cust) }}"
-                      method="POST"
-                      class="inline"
-                      onsubmit="return confirm('Hapus {{ $cust->customer }}?')"
-                    >
-                      @csrf @method('DELETE')
-                      <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
-                    </form>
                   </td>
                 </tr>
               @endforeach

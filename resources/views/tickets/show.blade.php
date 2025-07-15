@@ -4,12 +4,13 @@
 
 @section('content')
 @php
-    use App\Models\EscalationLevel;
-    $escalationLevels = EscalationLevel::orderBy('level')->get();
-    $duration = $ticket->start_time && $ticket->end_time 
-        ? $ticket->end_time->diffInMinutes($ticket->start_time).' minutes' 
-        : '—';
+use Carbon\Carbon;
+$escalationLevels = \App\Models\EscalationLevel::orderBy('level')->get();
+$duration = ($ticket->start_time && $ticket->end_time)
+    ? Carbon::parse($ticket->end_time)->diffInMinutes(Carbon::parse($ticket->start_time)) . ' minutes'
+    : '-';
 @endphp
+
 
 <div
     x-data="{
@@ -71,7 +72,7 @@
                     <div class="px-6 py-5 bg-gray-50 border-b border-gray-200">
                         <h3 class="text-lg font-medium text-gray-900">Ticket Information</h3>
                     </div>
-                    <form method="POST" action="{{ route('tickets.update', $ticket) }}" class="divide-y divide-gray-200">
+                    <form method="POST" action="{{ route('tickets.update', $ticket->id) }}" class="divide-y divide-gray-200">
                         @csrf @method('PATCH')
                         
                         {{-- Basic Info --}}
@@ -110,24 +111,25 @@
                         {{-- Customer Info --}}
                         <div class="px-6 py-4">
                             <h4 class="text-sm font-medium text-gray-500 mb-2">Customer Information</h4>
-                            <div class="space-y-2">
-                                <div>
-                                    <p class="text-sm text-gray-500">Customer Name</p>
-                                    <p class="text-sm font-medium">{{ optional($ticket->customer)->customer }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Customer SID</p>
-                                    <p class="text-sm font-medium">{{ optional($ticket->customer)->cid_abh }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Supplier Name</p>
-                                    <p class="text-sm font-medium">{{ optional(optional($ticket->customer)->supplier)->nama_supplier }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500">Supplier SID</p>
-                                    <p class="text-sm font-medium">{{ optional($ticket->customer)->cid_supp }}</p>
-                                </div>
+                        <div class="space-y-2">
+                            <div>
+                                <p class="text-sm text-gray-500">Customer Name</p>
+                                <p class="text-sm font-medium">{{ $ticket->customer_name ?? '-' }}</p>
                             </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Customer SID</p>
+                                <p class="text-sm font-medium">{{ $ticket->customer_cid_abh ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Supplier Name</p>
+                                <p class="text-sm font-medium">{{ $ticket->supplier_name ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Supplier SID</p>
+                                <p class="text-sm font-medium">{{ $ticket->customer_cid_supp ?? '-' }}</p>
+                            </div>
+                        </div>
+
                         </div>
                         
                         {{-- Ticket Numbers --}}
@@ -251,7 +253,7 @@
                         @if($ticket->updates->count() > 0)
                             <div class="flow-root">
                                 <ul class="-mb-8">
-                                    @foreach($ticket->updates as $update)
+                                    @if($updates->count() > 0)
                                         <li>
                                             <div class="relative pb-8">
                                                 @if(!$loop->last)

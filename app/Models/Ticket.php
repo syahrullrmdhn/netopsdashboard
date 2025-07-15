@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class Ticket extends Model
 {
@@ -34,46 +35,60 @@ class Ticket extends Model
         'alert'      => 'boolean',
     ];
 
-    // Ticket number generator: ABH(cid_abh)-tahun-(urutan per customer per tahun)
+    /**
+     * Otomatis generate ticket_number saat create:
+     * Format: ABH{CID}-{tahun}-{urut 3 digit}
+     * – CID dipotong sebelum spasi pertama, non-alnum dihapus, max 10 char.
+     */
     protected static function booted()
     {
         static::creating(function ($ticket) {
-            // Ambil customer terkait (pastikan sudah valid di controller)
+            // 1) Ambil customer
             $customer = \App\Models\Customer::find($ticket->customer_id);
 
-            // Tahun dari open_date, fallback ke tahun sekarang
+            // 2) Tahun dari open_date atau tahun sekarang
             $year = $ticket->open_date
-                ? \Carbon\Carbon::parse($ticket->open_date)->format('Y')
+                ? Carbon::parse($ticket->open_date)->format('Y')
                 : now()->format('Y');
 
-            // Hitung ticket yang sudah ada di tahun tsb, untuk customer tsb
+            // 3) Ambil customer group ID dari koneksi customerdb, lalu tambahkan "00" di belakang
+            $groupSuffix = '0000'; // default jika tidak ditemukan (2 digit id + "00")
+            if ($customer && $customer->customer_group_id) {
+                $group = \App\Models\CustomerGroup::find($customer->customer_group_id);
+                if ($group) {
+                    // misal id = 61 → jadi "6100"
+                    $groupSuffix = $group->id . '00';
+                }
+            }
+
+            // 4) Hitung urutan tiket untuk customer + tahun tersebut
             $count = self::whereYear('open_date', $year)
-                ->where('customer_id', $ticket->customer_id)
-                ->count();
+                         ->where('customer_id', $ticket->customer_id)
+                         ->count();
+            $order = $count + 1;
 
-            $order = $count + 1; // ticket ini urutan berikutnya
-
-            // Format: ABH(cid_abh)-tahun-(3 digit urut)
-            $ticket->ticket_number = sprintf(
-                'ABH%s-%s-%03d',
-                $customer ? $customer->cid_abh : 'XXX',
-                $year,
-                $order
-            );
+            // 5) Bentuk ticket_number: YEAR + groupSuffix + urutan 3-digit
+            //    Contoh: 2025 + "6100" + "007" = "20256100007"
+            $ticket->ticket_number = $year
+                                  . $groupSuffix
+                                  . sprintf('%03d', $order);
         });
     }
 
-    // Relasi-relasi
+    /** Relasi ke Customer */
     public function customer()
     {
-        return $this->belongsTo(\App\Models\Customer::class);
+        return $this->belongsTo(\App\Models\Customer::class, 'customer_id', 'id');
     }
 
+
+    /** Relasi ke User (yang create ticket) */
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
     }
 
+    /** Relasi ke TicketUpdate (chronology) */
     public function updates()
     {
         return $this->hasMany(\App\Models\TicketUpdate::class)

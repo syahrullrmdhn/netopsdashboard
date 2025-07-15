@@ -10,7 +10,6 @@
       <h1 class="text-2xl font-bold text-gray-900">Ticket Management</h1>
       <p class="text-sm text-gray-500 mt-1">Efficiently track and resolve customer support tickets</p>
     </div>
-    
     <div class="flex flex-col sm:flex-row gap-3">
       {{-- Search & Filter --}}
       <form method="GET" action="{{ route('tickets.index') }}" class="flex flex-col sm:flex-row gap-2">
@@ -26,7 +25,6 @@
                  placeholder="Search tickets..."
                  class="pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
         </div>
-        
         <div>
           <select name="status" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
             <option value="" {{ request('status')=='' ? 'selected' : '' }}>All Statuses</option>
@@ -34,7 +32,6 @@
             <option value="closed" {{ request('status')=='closed' ? 'selected' : '' }}>Closed</option>
           </select>
         </div>
-        
         <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           Apply Filters
         </button>
@@ -44,7 +41,6 @@
 
   {{-- Action Buttons --}}
   <div class="flex flex-wrap items-center gap-3">
-    {{-- New Ticket --}}
     <a href="{{ route('tickets.create') }}"
        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
       <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -52,8 +48,6 @@
       </svg>
       New Ticket
     </a>
-    
-    {{-- Export Template --}}
     <a href="{{ route('tickets.export.template') }}"
        class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
       <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,8 +55,6 @@
       </svg>
       Excel Template
     </a>
-    
-    {{-- Export Tickets --}}
     <a href="{{ route('tickets.export') }}"
        class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
       <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,8 +62,6 @@
       </svg>
       Export Tickets
     </a>
-    
-    {{-- Import Tickets --}}
     <button @click="importOpen = true"
        class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
       <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -177,21 +167,21 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                  <span class="text-indigo-600 font-medium">{{ substr(optional($t->customer)->customer, 0, 1) }}</span>
+                  <span class="text-indigo-600 font-medium">{{ substr($t->customer_name, 0, 1) }}</span>
                 </div>
                 <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900">{{ optional($t->customer)->customer }}</div>
-                  <div class="text-sm text-gray-500">{{ optional($t->customer)->cid_abh }}</div>
+                  <div class="text-sm font-medium text-gray-900">{{ $t->customer_name }}</div>
+                  <div class="text-sm text-gray-500">{{ $t->customer_cid_abh }}</div>
                 </div>
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ optional($t->customer->supplier)->nama_supplier }}</div>
-              <div class="text-sm text-gray-500">{{ optional($t->customer)->cid_supp }}</div>
+              <div class="text-sm text-gray-900">{{ $t->supplier_name }}</div>
+              <div class="text-sm text-gray-500">{{ $t->customer_cid_supp }}</div>
             </td>
             <td class="px-6 py-4">
               <div class="text-sm font-medium text-gray-900">{{ $t->issue_type }}</div>
-              <div class="text-sm text-gray-500">{{ Str::limit($t->problem_detail, 30, '...') ?: '—' }}</div>
+              <div class="text-sm text-gray-500">{{ \Illuminate\Support\Str::limit($t->problem_detail, 30, '...') ?: '—' }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-mono font-medium text-gray-900">{{ $t->ticket_number }}</div>
@@ -199,25 +189,25 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-900">
-                {{ optional($t->start_time)->format('M j, H:i') ?: '—' }}
-                @if($t->start_time && $t->end_time) 
+                {{ $t->start_time ? \Carbon\Carbon::parse($t->start_time)->format('M j, H:i') : '—' }}
+                @if($t->start_time && $t->end_time)
                 <span class="text-gray-400 mx-1">→</span>
-                {{ $t->end_time->format('M j, H:i') }} 
+                {{ \Carbon\Carbon::parse($t->end_time)->format('M j, H:i') }}
                 @endif
               </div>
               <div class="text-sm text-gray-500">
                 @if($t->start_time && $t->end_time)
-                  {{ $t->end_time->diffForHumans($t->start_time, true) }}
+                  {{ \Carbon\Carbon::parse($t->end_time)->diffForHumans(\Carbon\Carbon::parse($t->start_time), true) }}
                 @elseif($t->start_time)
                   <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                    Ongoing ({{ now()->diffForHumans($t->start_time, true) }})
+                    Ongoing ({{ now()->diffForHumans(\Carbon\Carbon::parse($t->start_time), true) }})
                   </span>
                 @else
                   Not started
                 @endif
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+                       <td class="px-6 py-4 whitespace-nowrap">
               @if($t->end_time)
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                   Closed
@@ -230,19 +220,19 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <div class="flex items-center justify-end space-x-2">
-                <a href="{{ route('tickets.show', $t) }}" class="text-indigo-600 hover:text-indigo-900" title="View">
+                <a href="{{ route('tickets.show', $t->id) }}" class="text-indigo-600 hover:text-indigo-900" title="View">
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 </a>
-                <a href="{{ route('tickets.edit', $t) }}" class="text-gray-600 hover:text-gray-900" title="Edit">
+                <a href="{{ route('tickets.edit', $t->id) }}" class="text-gray-600 hover:text-gray-900" title="Edit">
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </a>
                 @unless($t->end_time)
-                <form action="{{ route('tickets.close', $t) }}" method="POST" class="inline">
+                <form action="{{ route('tickets.close', $t->id) }}" method="POST" class="inline">
                   @csrf @method('PATCH')
                   <button type="submit" onclick="return confirm('Are you sure you want to close this ticket?')" class="text-green-600 hover:text-green-900" title="Close Ticket">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -264,7 +254,6 @@
         </tbody>
       </table>
     </div>
-    
     {{-- Pagination --}}
     @if($tickets->hasPages())
     <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
@@ -274,3 +263,4 @@
   </div>
 </div>
 @endsection
+

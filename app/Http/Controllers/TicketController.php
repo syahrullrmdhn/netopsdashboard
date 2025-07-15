@@ -15,38 +15,60 @@ use Log;
 class TicketController extends Controller
 {
     // ─────────────────────────────────────────────────────
-    // 1) LIST & CRUD
+    // 1) LISTING & CRUD
     // ─────────────────────────────────────────────────────
 
-    public function index(Request $request)
-    {
-        $search = $request->input('search');
-        $status = $request->input('status');
+    /**
+     * Display a paginated list of tickets, with search & status filters.
+     */
+public function index(Request $request)
+{
+    $search = $request->input('search');
+    $status = $request->input('status');
 
-        $tickets = Ticket::with(['customer.supplier','user','updates'])
-            ->when($search, function($query, $search) {
-                $query->where(function($q) use ($search) {
-                    $q->where('ticket_number', 'like', "%{$search}%")
-                      ->orWhere('supplier_ticket_number', 'like', "%{$search}%")
-                      ->orWhere('issue_type', 'like', "%{$search}%")
-                      ->orWhereHas('customer', function($q2) use ($search) {
-                          $q2->where('customer', 'like', "%{$search}%");
-                      });
-                });
-            })
-            ->when($status === 'open', function($query) {
-                $query->whereNull('end_time');
-            })
-            ->when($status === 'closed', function($query) {
-                $query->whereNotNull('end_time');
-            })
-            ->latest('id')
-            ->paginate(15)
-            ->appends($request->only('search','status'));
+    // Get db name for dynamic join
+    $customerDb = config('database.connections.customerdb.database');
 
-        return view('tickets.index', compact('tickets', 'search', 'status'));
+    $query = \DB::table('tickets as t')
+        ->join("$customerDb.customers as c", 't.customer_id', '=', 'c.id')
+        ->leftJoin("$customerDb.suppliers as s", 'c.kdsupplier', '=', 's.kdsupplier')
+        ->leftJoin('users as u', 't.user_id', '=', 'u.id')
+        ->select(
+            't.*',
+            'c.customer as customer_name',
+            'c.cid_abh as customer_cid_abh',
+            'c.cid_supp as customer_cid_supp',
+            's.nama_supplier as supplier_name',
+            'u.name as user_name'
+        );
+
+    // Filter search
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('t.ticket_number', 'like', "%{$search}%")
+                ->orWhere('t.supplier_ticket_number', 'like', "%{$search}%")
+                ->orWhere('t.issue_type', 'like', "%{$search}%")
+                ->orWhere('c.customer', 'like', "%{$search}%");
+        });
     }
 
+    // Status filter
+    if ($status === 'open') {
+        $query->whereNull('t.end_time');
+    } elseif ($status === 'closed') {
+        $query->whereNotNull('t.end_time');
+    }
+
+    $tickets = $query
+        ->orderByDesc('t.id')
+        ->paginate(15)
+        ->appends($request->only('search', 'status'));
+
+    return view('tickets.index', compact('tickets', 'search', 'status'));
+}
+    /**
+     * Show form to create a new ticket.
+     */
     public function create()
     {
         $customers = Customer::orderBy('customer')
@@ -54,6 +76,9 @@ class TicketController extends Controller
         return view('tickets.create', compact('customers'));
     }
 
+    /**
+     * Store a newly created ticket.
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -81,12 +106,45 @@ class TicketController extends Controller
                          ->with('success','Ticket created.');
     }
 
-    public function show(Ticket $ticket)
-    {
-        $ticket->load(['customer.supplier','user','updates.user']);
-        return view('tickets.show', compact('ticket'));
-    }
+    /**
+     * Show a single ticket detail.
+     */
+public function show($id)
+{
+    // Join ke customer & supplier seperti index (pakai stdClass)
+    $customerDb = config('database.connections.customerdb.database');
+    $ticket = \DB::table('tickets as t')
+        ->join("$customerDb.customers as c", 't.customer_id', '=', 'c.id')
+        ->leftJoin("$customerDb.suppliers as s", 'c.kdsupplier', '=', 's.kdsupplier')
+        ->leftJoin('users as u', 't.user_id', '=', 'u.id')
+        ->select(
+            't.*',
+            'c.customer as customer_name',
+            'c.cid_abh as customer_cid_abh',
+            'c.cid_supp as customer_cid_supp',
+            's.nama_supplier as supplier_name',
+            'u.name as user_name'
+        )
+        ->where('t.id', $id)
+        ->first();
 
+    // Ambil updates ticket
+    $updates = \DB::table('ticket_updates as tu')
+        ->leftJoin('users as u', 'tu.user_id', '=', 'u.id')
+        ->where('tu.ticket_id', $id)
+        ->orderBy('tu.created_at')
+        ->select('tu.*', 'u.name as user_name')
+        ->get();
+
+    // Kirim ke view
+    return view('tickets.show', compact('ticket', 'updates'));
+}
+
+
+
+    /**
+     * Update an existing ticket.
+     */
     public function update(Request $request, Ticket $ticket)
     {
         $data = $request->validate([
@@ -101,17 +159,19 @@ class TicketController extends Controller
             'alert'                  => 'sometimes|boolean',
         ]);
 
-        $ticket->update($data + ['alert'=>$request->has('alert')]);
+        $ticket->update($data + ['alert' => $request->has('alert')]);
 
         return back()->with('success','Ticket updated.');
     }
 
+    /**
+     * Mark a ticket as closed (sets end_time = now).
+     */
     public function close(Ticket $ticket)
     {
-        $ticket->update(['end_time'=>now()]);
+        $ticket->update(['end_time' => now()]);
         return back()->with('success','Ticket closed.');
     }
-
 
     // ─────────────────────────────────────────────────────
     // 2) RFO Preview + PDF
@@ -120,35 +180,89 @@ class TicketController extends Controller
     /**
      * Show the HTML RFO in‐browser.
      */
-    public function rfo(Ticket $ticket)
-    {
-        $ticket->load(['customer.supplier','user','updates.user']);
-        return view('tickets.rfo-pdf', compact('ticket'));
-    }
+public function rfo($id)
+{
+    $customerDb = config('database.connections.customerdb.database');
+    $raw = \DB::table('tickets as t')
+        ->join("$customerDb.customers as c", 't.customer_id', '=', 'c.id')
+        ->leftJoin("$customerDb.suppliers as s", 'c.kdsupplier', '=', 's.kdsupplier')
+        ->leftJoin('users as u', 't.user_id', '=', 'u.id')
+        ->select(
+            't.*',
+            'c.customer as customer',
+            'c.cid_abh as cid_abh',
+            'c.cid_supp as cid_supp',
+            's.nama_supplier as supplier',
+            'u.name as user'
+        )
+        ->where('t.id', $id)
+        ->first();
+
+    if (!$raw) abort(404);
+
+    $ticket = (object) $raw;
+
+    $updates = \DB::table('ticket_updates')
+        ->leftJoin('users', 'ticket_updates.user_id', '=', 'users.id')
+        ->where('ticket_id', $id)
+        ->orderBy('ticket_updates.created_at', 'desc')
+        ->select('ticket_updates.*', 'users.name as user')
+        ->get();
+
+    return view('tickets.rfo-pdf', compact('ticket', 'updates'));
+}
 
     /**
      * Download the RFO as a PDF.
      */
-    public function rfoPdf(Request $request, Ticket $ticket)
-    {
-        $ticket->load(['customer.supplier','user','updates.user']);
+public function rfoPdf(Request $request, $id)
+{
+    $customerDb = config('database.connections.customerdb.database');
+    $raw = \DB::table('tickets as t')
+        ->join("$customerDb.customers as c", 't.customer_id', '=', 'c.id')
+        ->leftJoin("$customerDb.suppliers as s", 'c.kdsupplier', '=', 's.kdsupplier')
+        ->leftJoin('users as u', 't.user_id', '=', 'u.id')
+        ->select(
+            't.*',
+            'c.customer as customer',
+            'c.cid_abh as cid_abh',
+            'c.cid_supp as cid_supp',
+            's.nama_supplier as supplier',
+            'u.name as user'
+        )
+        ->where('t.id', $id)
+        ->first();
 
-        // allow overriding from modal
-        $ticket->problem_detail    = $request->input('problem_detail',    $ticket->problem_detail);
-        $ticket->action_taken      = $request->input('action_taken',      $ticket->action_taken);
-        $ticket->preventive_action = $request->input('preventive_action', $ticket->preventive_action);
+    if (!$raw) abort(404);
 
-        $pdf = Pdf::loadView('tickets.rfo-pdf', compact('ticket'))
-                  ->setPaper('a4','portrait');
+    $ticket = (object) $raw;
 
-        return $pdf->download("RFO-{$ticket->ticket_number}.pdf");
-    }
+    // override (jika ada perubahan dari modal RFO)
+    $ticket->problem_detail    = $request->input('problem_detail',    $ticket->problem_detail);
+    $ticket->action_taken      = $request->input('action_taken',      $ticket->action_taken);
+    $ticket->preventive_action = $request->input('preventive_action', $ticket->preventive_action);
+
+    $updates = \DB::table('ticket_updates')
+        ->leftJoin('users', 'ticket_updates.user_id', '=', 'users.id')
+        ->where('ticket_id', $id)
+        ->orderBy('ticket_updates.created_at', 'desc')
+        ->select('ticket_updates.*', 'users.name as user')
+        ->get();
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('tickets.rfo-pdf', compact('ticket', 'updates'))
+        ->setPaper('a4', 'portrait');
+
+    return $pdf->download("RFO-{$ticket->ticket_number}.pdf");
+}
 
 
     // ─────────────────────────────────────────────────────
     // 3) IMPORT / EXPORT Excel via Spout
     // ─────────────────────────────────────────────────────
 
+    /**
+     * Import tickets from an uploaded Excel file.
+     */
     public function import(Request $request)
     {
         $request->validate(['file'=>'required|file|mimes:xlsx,xls']);
@@ -163,16 +277,17 @@ class TicketController extends Controller
         $saved = 0; $skipped = 0; $reasons = [];
 
         foreach ($reader->getSheetIterator() as $sheet) {
-            $header=null; $dateKey=null; $rowNo=0;
+            $header = null; $dateKey = null; $rowNo = 0;
             foreach ($sheet->getRowIterator() as $row) {
                 $rowNo++;
                 $cells = $row->toArray();
 
-                if ($rowNo===1) {
-                    $header = array_map(fn($h)=>Str::slug($h,'_'), $cells);
+                if ($rowNo === 1) {
+                    $header = array_map(fn($h) => Str::slug($h,'_'), $cells);
                     foreach (['date_start_time','open_date','start_date'] as $cand) {
-                        if (in_array($cand,$header,true)) {
-                            $dateKey=$cand; break;
+                        if (in_array($cand, $header, true)) {
+                            $dateKey = $cand;
+                            break;
                         }
                     }
                     if (!$dateKey) {
@@ -181,44 +296,49 @@ class TicketController extends Controller
                     }
                     continue;
                 }
-                if (!$header) continue;
+                if (!$header) {
+                    continue;
+                }
 
-                // map
+                // map row to associative array
                 $data = [];
-                foreach ($header as $i=>$col) {
+                foreach ($header as $i => $col) {
                     $val = $cells[$i] ?? null;
                     $data[$col] = $val instanceof \DateTimeInterface
                                  ? $val->format('Y-m-d H:i:s')
-                                 : trim((string)($val??''));
+                                 : trim((string)($val ?? ''));
                 }
 
-                // validate start
-                if ($data[$dateKey]==='') {
-                    $this->logSkip($rowNo,'missing start-date',$reasons,$skipped);
+                // validate start_date
+                if ($data[$dateKey] === '') {
+                    $this->logSkip($rowNo, 'missing start-date', $reasons, $skipped);
                     continue;
                 }
                 try {
                     $start = Carbon::parse($data[$dateKey]);
                 } catch (\Exception $e) {
-                    $this->logSkip($rowNo,'invalid start-date format',$reasons,$skipped);
+                    $this->logSkip($rowNo, 'invalid start-date format', $reasons, $skipped);
                     continue;
                 }
 
-                // parse end (optional)
+                // parse optional end
                 $end = null;
                 if (!empty($data['date_end_time'] ?? '')) {
-                    try { $end = Carbon::parse($data['date_end_time']); }
-                    catch (\Exception $e) { }
+                    try {
+                        $end = Carbon::parse($data['date_end_time']);
+                    } catch (\Exception $e) {
+                        // ignore parse errors
+                    }
                 }
 
-                // fuzzy match customer
+                // match customer
                 $cust = $this->matchCustomer($data, $customers);
                 if (!$cust) {
-                    $this->logSkip($rowNo,'customer not found',$reasons,$skipped);
+                    $this->logSkip($rowNo, 'customer not found', $reasons, $skipped);
                     continue;
                 }
 
-                // create
+                // create ticket
                 $ticket = Ticket::create([
                     'customer_id'            => $cust->id,
                     'open_date'              => $start->toDateString(),
@@ -250,10 +370,13 @@ class TicketController extends Controller
             : null;
 
         return redirect()->route('tickets.index')
-                         ->with('success',$msgSuccess)
-                         ->with('warning',$msgWarn);
+                         ->with('success', $msgSuccess)
+                         ->with('warning', $msgWarn);
     }
 
+    /**
+     * Download an Excel template for import.
+     */
     public function exportTemplate()
     {
         $headers = [
@@ -270,9 +393,14 @@ class TicketController extends Controller
         $writer->addRow(WriterEntityFactory::createRowFromArray($headers));
         $writer->close();
 
-        return response()->download($tmp,'ticket-template.xlsx')->deleteFileAfterSend(true);
+        return response()
+            ->download($tmp, 'ticket-template.xlsx')
+            ->deleteFileAfterSend(true);
     }
 
+    /**
+     * Export all tickets to Excel.
+     */
     public function exportTickets()
     {
         $writer = WriterEntityFactory::createXLSXWriter();
@@ -290,10 +418,12 @@ class TicketController extends Controller
         $writer->addRow(WriterEntityFactory::createRowFromArray($headers));
 
         $i = 0;
-        $tickets = Ticket::with('customer.supplier','updates','user')
-                        ->orderBy('id')
-                        ->get();
-        foreach ($tickets as $t) {
+        // cursor() untuk memory-efficient streaming
+        $query = Ticket::with('customer.supplier','updates','user')
+                       ->orderBy('id')
+                       ->cursor();
+
+        foreach ($query as $t) {
             $i++;
             $row = [
                 $i,
@@ -321,33 +451,41 @@ class TicketController extends Controller
 
         $writer->close();
 
-        return response()->download($tmp,$fname)->deleteFileAfterSend(true);
+        return response()
+            ->download($tmp, $fname)
+            ->deleteFileAfterSend(true);
     }
 
     // ─────────────────────────────────────────────────────
     // 4) HELPERS
     // ─────────────────────────────────────────────────────
 
+    /**
+     * Log and count skipped rows during import.
+     */
     protected function logSkip(int $row, string $why, array &$reasons, int &$skip)
     {
         $skip++;
         Log::warning("ImportTickets: row {$row} skipped – {$why}");
-        if (count($reasons)<5) {
+        if (count($reasons) < 5) {
             $reasons[] = "Row {$row}: {$why}";
         }
     }
 
+    /**
+     * Attempt to match imported row to an existing customer.
+     */
     protected function matchCustomer(array $row, $customers)
     {
         $cid  = $row['cid_abh']  ?? '';
         $name = $row['customer'] ?? '';
 
-        // exact CID
-        if ($cid && ($c = $customers->firstWhere('cid_abh',$cid))) {
+        // 1) exact CID match
+        if ($cid && ($c = $customers->firstWhere('cid_abh', $cid))) {
             return $c;
         }
 
-        // fuzzy by name ≥80%
+        // 2) fuzzy by name ≥80%
         $bestPct = 0; $best = null;
         foreach ($customers as $c) {
             similar_text(mb_strtolower($name), mb_strtolower($c->customer), $pct);
@@ -360,7 +498,7 @@ class TicketController extends Controller
             return $best;
         }
 
-        // fuzzy by CID (Levenshtein ≤2)
+        // 3) fuzzy by CID (Levenshtein ≤2)
         $bestDist = PHP_INT_MAX; $bestCid = null;
         foreach ($customers as $c) {
             $d = levenshtein($cid, $c->cid_abh);

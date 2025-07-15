@@ -73,7 +73,29 @@
         <h2 class="text-lg font-medium text-gray-900">Issues Summary</h2>
       </div>
       <div class="px-6 py-4">
-        <textarea id="issuesEditor" name="issues" class="hidden">{{ old('issues', $markdown) }}</textarea>
+      <textarea id="issuesEditor" name="issues" class="hidden" rows="20" cols="100">
+      @php
+      // Inisialisasi array untuk menampung setiap baris output
+      $outputLines = [];
+      $no = 1;
+
+      // Loop melalui setiap tiket untuk membangun string-nya
+      foreach ($tickets as $t) {
+          // Tentukan teks update: gunakan keterangan jika ada, jika tidak, gunakan teks default
+          $updateText = ($t->updates->isNotEmpty() && $t->updates->first()->keterangan)
+              ? trim($t->updates->first()->keterangan)
+              : 'Belum ada update.';
+
+          // Buat satu baris lengkap untuk tiket saat ini
+          $outputLines[] = "{$no}. {$t->ticket_number} | {$t->customer->customer} | {$t->issue_type} | {$updateText}";
+          
+          $no++;
+      }
+
+      // Gabungkan semua baris menjadi satu string tunggal dengan pemisah baris baru
+      echo implode("\n", $outputLines);
+      @endphp
+      </textarea>
         <div class="mt-2 flex space-x-2">
           <button type="button" onclick="copyMarkdown()" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-white hover:bg-gray-50">
             Copy as Markdown
@@ -110,7 +132,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/z191hzbqyi5onz961oh7immhn0prmwsmmduc42iolf5bxu8j/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
   tinymce.init({
     selector: '#issuesEditor',
@@ -118,6 +140,7 @@
     toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | table | help',
     menubar: false,
     height: 300,
+    forced_root_block : 'p', // Penting agar tiap enter jadi <p> (paragraf)
     setup: editor => editor.on('change', () => editor.save())
   });
 
@@ -131,12 +154,10 @@
   });
 
   function copyMarkdown() {
-    const html = tinymce.get('issuesEditor').getContent();
-    const text = html
-      .replace(/<\/p>/gi, '\n')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<[^>]+>/g, '')
-      .trim();
+    const editor = tinymce.get('issuesEditor');
+    const text = editor.getContent({ format: 'text' })
+      .trim()
+      .replace(/\r\n|\r/g, '\n');
     navigator.clipboard.writeText(text)
       .then(() => notify('Markdown copied to clipboard!', 'green'))
       .catch(() => notify('Failed to copy text', 'red'));

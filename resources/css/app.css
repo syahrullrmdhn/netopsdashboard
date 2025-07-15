@@ -1,33 +1,15 @@
-/* resources/css/app.css */
+/* Jika Anda mau import langsung via CSS, tambahkan ini di paling atas.
+   Karena Anda sudah memasukkan <link> di HTML head, baris ini bisa diabaikan. */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
-@font-face {
-    font-family: 'GT Walsheim Pro';
-    /* Nama file persis dari screenshot Anda */
-    src: url('/fonts/GTWalsheim/GT-Walsheim-Regular-Trial-BF651b7c67342f.otf') format('opentype');
-    font-weight: 400; /* Regular */
-    font-style: normal;
+/* ===== Override Base Font ===== */
+@layer base {
+  html {
+    font-family: 'Mulish', sans-serif;
+  }
 }
 
-@font-face {
-    font-family: 'GT Walsheim Pro';
-    /* Nama file persis dari screenshot Anda */
-    src: url('/fonts/GTWalsheim/GT-Walsheim-Medium-Trial-BF651b7c69eff5.otf') format('opentype');
-    font-weight: 500; /* Medium */
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'GT Walsheim Pro';
-    /* Nama file persis dari screenshot Anda */
-    src: url('/fonts/GTWalsheim/GT-Walsheim-Bold-Trial-BF651b7c7358e0.otf') format('opentype');
-    font-weight: 700; /* Bold */
-    font-style: normal;
-}
-
-/* ... tambahkan @font-face lain jika perlu ... */
-
-
-/* Kode Tailwind bawaan */
+/* ===== Tailwind Directives ===== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
