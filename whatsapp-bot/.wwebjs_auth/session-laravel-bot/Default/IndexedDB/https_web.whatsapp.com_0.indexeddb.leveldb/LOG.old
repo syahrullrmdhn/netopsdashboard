@@ -1,0 +1,18 @@
+2025/07/25-10:40:50.409 8260 Reusing MANIFEST D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/07/25-10:40:50.409 8260 Recovering log #118
+2025/07/25-10:40:50.444 8260 Reusing old log D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000118.log 
+2025/07/25-10:40:50.445 8260 Delete type=2 #115
+2025/07/25-10:40:50.445 8260 Delete type=2 #116
+2025/07/25-10:40:50.445 8260 Delete type=2 #119
+2025/07/25-10:40:52.114 8d24 Level-0 table #124: started
+2025/07/25-10:40:52.122 8d24 Level-0 table #124: 226543 bytes OK
+2025/07/25-10:40:52.123 8d24 Delete type=0 #118
+2025/07/25-10:40:52.124 8d24 Manual compaction at level-0 from '\x00.\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00/\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/07/25-10:40:54.016 2258 Compacting 1@1 + 2@2 files
+2025/07/25-10:40:54.088 2258 Generated table #125@1: 45663 keys, 2206593 bytes
+2025/07/25-10:40:54.104 2258 Generated table #126@1: 9849 keys, 166624 bytes
+2025/07/25-10:40:54.104 2258 Compacted 1@1 + 2@2 files => 2373217 bytes
+2025/07/25-10:40:54.104 2258 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/07/25-10:40:54.105 2258 Delete type=2 #120
+2025/07/25-10:40:54.105 2258 Delete type=2 #121
+2025/07/25-10:40:54.105 2258 Delete type=2 #124

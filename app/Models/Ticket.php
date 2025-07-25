@@ -3,13 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
+use App\Models\Customer;
+use App\Models\CustomerGroup;
 
 class Ticket extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
-        'ticket_number',
         'open_date',
         'customer_id',
         'supplier_ticket_number',
@@ -28,6 +31,9 @@ class Ticket extends Model
         'escalation',
     ];
 
+    /**
+     * The attributes that should be cast.
+     */
     protected $casts = [
         'open_date'  => 'datetime',
         'start_time' => 'datetime',
@@ -36,59 +42,78 @@ class Ticket extends Model
     ];
 
     /**
-     * Otomatis generate ticket_number saat create:
-     * Format: ABH{CID}-{tahun}-{urut 3 digit}
-     * – CID dipotong sebelum spasi pertama, non-alnum dihapus, max 10 char.
+     * Booted model hook: generate ticket_number on create.
      */
     protected static function booted()
     {
-        static::creating(function ($ticket) {
-            // 1) Ambil customer
-            $customer = \App\Models\Customer::find($ticket->customer_id);
-
-            // 2) Tahun dari open_date atau tahun sekarang
-            $year = $ticket->open_date
-                ? Carbon::parse($ticket->open_date)->format('Y')
-                : now()->format('Y');
-
-            // 3) Ambil customer group ID dari koneksi customerdb, lalu tambahkan "00" di belakang
-            $groupSuffix = '0000'; // default jika tidak ditemukan (2 digit id + "00")
-            if ($customer && $customer->customer_group_id) {
-                $group = \App\Models\CustomerGroup::find($customer->customer_group_id);
-                if ($group) {
-                    // misal id = 61 → jadi "6100"
-                    $groupSuffix = $group->id . '00';
-                }
-            }
-
-            // 4) Hitung urutan tiket untuk customer + tahun tersebut
-            $count = self::whereYear('open_date', $year)
-                         ->where('customer_id', $ticket->customer_id)
-                         ->count();
-            $order = $count + 1;
-
-            // 5) Bentuk ticket_number: YEAR + groupSuffix + urutan 3-digit
-            //    Contoh: 2025 + "6100" + "007" = "20256100007"
-            $ticket->ticket_number = $year
-                                  . $groupSuffix
-                                  . sprintf('%03d', $order);
+        static::creating(function (Ticket $ticket) {
+            $ticket->ticket_number = self::generateTicketNumber($ticket);
         });
     }
 
-    /** Relasi ke Customer */
-    public function customer()
+    /**
+     * Generate a unique ticket number in the format:
+     *   {YEAR}{customer_group_id}00{3‑digit sequence}
+     *
+     * Example: 2025 + "36" + "00" + "007" → "20253600007"
+     */
+    protected static function generateTicketNumber(Ticket $ticket): string
     {
-        return $this->belongsTo(\App\Models\Customer::class, 'customer_id', 'id');
+        // 1) Year part
+        $year = $ticket->open_date
+            ? Carbon::parse($ticket->open_date)->format('Y')
+            : Carbon::now()->format('Y');
+
+        // 2) Customer‑group ID + "00" suffix
+        $groupSuffix = '0000'; // default if no group
+        if ($ticket->customer_id) {
+            $cust = Customer::find($ticket->customer_id);
+            if ($cust && $cust->customer_group_id) {
+                $groupSuffix = $cust->customer_group_id . '00';
+            }
+        }
+
+        // 3) Prefix assembly
+        $prefix = $year . $groupSuffix;
+
+        // 4) Find last existing ticket_number with this prefix
+        $last = self::where('ticket_number', 'like', "{$prefix}%")
+                    ->orderBy('ticket_number', 'desc')
+                    ->first();
+
+        // 5) Determine next sequence
+        if ($last) {
+            $lastSeq = (int) substr($last->ticket_number, strlen($prefix));
+            $nextSeq = $lastSeq + 1;
+        } else {
+            $nextSeq = 1;
+        }
+
+        // 6) Pad to 3 digits
+        $suffix = str_pad($nextSeq, 3, '0', STR_PAD_LEFT);
+
+        return $prefix . $suffix;
     }
 
+    /**
+     * Relationship: Ticket belongs to a Customer.
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
 
-    /** Relasi ke User (yang create ticket) */
+    /**
+     * Relationship: Ticket belongs to a User (creator).
+     */
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
     }
 
-    /** Relasi ke TicketUpdate (chronology) */
+    /**
+     * Relationship: Ticket has many updates (chronology entries).
+     */
     public function updates()
     {
         return $this->hasMany(\App\Models\TicketUpdate::class)

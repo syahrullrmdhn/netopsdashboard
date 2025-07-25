@@ -8,6 +8,7 @@ use App\Models\Ticket;         // default connection = networkdashboard
 use App\Models\Customer;       // connection = customerdb
 use App\Models\CustomerGroup;  // connection = customerdb
 use Throwable;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SLAController extends Controller
 {
@@ -22,85 +23,82 @@ class SLAController extends Controller
         $this->passhash = config('prtg.passhash','');
     }
 
-    public function index(Request $request)
-    {
-        //
-        // 1) (Optional) PRTG sensors fetch… omit if not needed
-        //
-        $connected = false;
-        $errorMsg  = '';
-        $groupedSensors = [];
-        try {
-            $resp = Http::get("{$this->host}/api/table.json", [
-                'content'  => 'sensors',
-                'columns'  => 'objid,name,device,lastvalue,status,message',
-                'count'    => '*',
-                'username' => $this->user,
-                'passhash' => $this->passhash,
-            ]);
-            if ($resp->ok()) {
-                $sensors = $resp->json()['sensors'] ?? [];
-                $groupedSensors = collect($sensors)
-                    ->groupBy('device')
-                    ->map(fn($grp)=>$grp->all())
-                    ->all();
-                $connected = true;
-            } else {
-                $errorMsg = "PRTG API HTTP {$resp->status()}";
-            }
-        } catch (Throwable $e) {
-            $errorMsg = $e->getMessage();
-        }
+public function index(Request $request)
+{
+    $search   = $request->input('search');
+    $dateFrom = $request->input('date_from') ?: now()->startOfMonth()->toDateString();
+    $dateTo   = $request->input('date_to')   ?: now()->endOfMonth()->toDateString();
 
-        //
-        // 2) Ambil semua ticket dari networkdashboard
-        //
-        $allTickets = Ticket::select('customer_id','start_time','end_time')
-                             ->get()
-                             ->filter(fn($t)=> $t->customer_id !== null);
-
-        // Group per customer_id
-        $ticketsByCust = $allTickets->groupBy('customer_id');
-
-        // Daftar customer_id yang punya ticket
-        $customerIds = $ticketsByCust->keys()->toArray();
-
-        //
-        // 3) Query Customer (connection customerdb) hanya yg punya ticket
-        //
-        $custQ = Customer::whereIn('id', $customerIds);
-
-        // Filters: search, group_id, status
-        if ($request->filled('search')) {
-            $q = $request->search;
-            $custQ->where(fn($qb)=>
-                $qb->where('customer','like',"%{$q}%")
-                   ->orWhere('cid_abh','like',"%{$q}%")
-            );
-        }
-        if ($request->filled('group_id')) {
-            $custQ->where('customer_group_id',$request->group_id);
-        }
-        if ($request->filled('status')) {
-            $custQ->where('status',(int)$request->status);
-        }
-
-        // Paginate & append filters
-        $customers = $custQ->latest('id')
-                           ->paginate(15)
-                           ->appends($request->query());
-
-        // Dropdown data
-        $groupsList = CustomerGroup::all();
-        $statuses   = [ 1=>'Active',2=>'Pending',3=>'Suspended',4=>'Terminated' ];
-
-        // Pass ke view
-        return view('sla.index', compact(
-            'connected','errorMsg','groupedSensors',
-            'customers','groupsList','statuses',
-            'ticketsByCust'
-        ));
+    // Cari customer (bisa search)
+    $customerQuery = \App\Models\Customer::on('customerdb');
+    if ($search) {
+        $customerQuery->where(function($q) use ($search) {
+            $q->where('customer', 'like', "%{$search}%")
+              ->orWhere('cid_abh', 'like', "%{$search}%");
+        });
     }
+    $customers = $customerQuery->get();
+    $customerIds = $customers->pluck('id')->toArray();
+
+    // Semua tiket link down periode ini (untuk semua customer hasil query di atas)
+    $linkDownTickets = \App\Models\Ticket::query()
+        ->whereIn('customer_id', $customerIds)
+        ->whereRaw("LOWER(issue_type) LIKE ?", ['%link down%'])
+        ->whereDate('start_time', '>=', $dateFrom)
+        ->whereDate('start_time', '<=', $dateTo)
+        ->get();
+
+    // Hitung detik periode
+    $start = \Carbon\Carbon::parse($dateFrom)->startOfDay();
+    $end   = \Carbon\Carbon::parse($dateTo)->endOfDay();
+    $periodSec = $end->diffInSeconds($start);
+
+    // Build data customerStats
+    $customerStats = [];
+    foreach ($customers as $cust) {
+        $slaPercent = floatval($cust->sla ?: 99.5);
+        $myTickets = $linkDownTickets->where('customer_id', $cust->id);
+
+        $totalDowntime = $myTickets->sum(function($t) {
+            return ($t->start_time)
+                ? \Carbon\Carbon::parse($t->end_time ?: now())->diffInSeconds(\Carbon\Carbon::parse($t->start_time))
+                : 0;
+        });
+
+        $slaAllowed = $periodSec * (100 - $slaPercent) / 100;
+        $slaReal = $slaPercent - round(($totalDowntime / $periodSec) * 100, 2);
+        $slaReal = max($slaReal, 0); // prevent negative
+
+        $customerStats[] = [
+            'customer'        => $cust,
+            'sla_percent'     => $slaPercent,
+            'total_downtime'  => $totalDowntime,
+            'sla_realtime'    => $slaReal,
+            'sla_allowed'     => $slaAllowed,
+            'linkdown_count'  => $myTickets->count(),
+        ];
+    }
+
+    // PAGINATION (manual untuk array!)
+    $page    = $request->input('page', 1);
+    $perPage = 15;
+    $offset  = ($page - 1) * $perPage;
+    $paginatedCustomerStats = new LengthAwarePaginator(
+        array_slice($customerStats, $offset, $perPage),
+        count($customerStats),
+        $perPage,
+        $page,
+        ['path' => url()->current(), 'query' => $request->query()]
+    );
+
+    return view('sla.index', [
+        'customerStats' => $paginatedCustomerStats,
+        'search'        => $search,
+        'dateFrom'      => $dateFrom,
+        'dateTo'        => $dateTo,
+        'periodSec'     => $periodSec,
+    ]);
+}
     /** Halaman detail: chart + report templates */
     public function show(int $sensorId)
     {

@@ -1,0 +1,4 @@
+2025/07/25-10:49:43.933 7d80 Reusing MANIFEST D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/07/25-10:49:43.934 7d80 Recovering log #123
+2025/07/25-10:49:43.954 7d80 Reusing old log D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000123.log 
+2025/07/25-10:49:52.890 7d70 Manual compaction at level-0 from '\x00/\x00\x00\x00' @ 72057594037927935 : 1 .. '\x000\x00\x00\x00' @ 0 : 0; will stop at (end)

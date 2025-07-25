@@ -1,0 +1,66 @@
+[2025-07-25T02:55:46.580Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T02:55:46.583Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=https://nocops.abhinawasystem.cloud, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T02:56:40.399Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T02:56:40.401Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=http://127.0.0.1:8000, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T02:56:44.367Z] INFO: New QR code generated
+[2025-07-25T02:57:44.212Z] INFO: New QR code generated
+[2025-07-25T02:58:04.219Z] INFO: New QR code generated
+[2025-07-25T02:58:14.528Z] INFO: WhatsApp client is ready & authenticated
+[2025-07-25T02:58:22.992Z] INFO: Received from 120363402512794274@g.us: /help
+[2025-07-25T03:00:38.599Z] INFO: Received from 120363402512794274@g.us: /time
+[2025-07-25T03:00:43.408Z] INFO: Received from 120363402512794274@g.us: /onduty
+[2025-07-25T03:00:59.762Z] INFO: Received from 120363402512794274@g.us: /handoverhistory
+[2025-07-25T03:18:18.081Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T03:18:18.087Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=http://127.0.0.1:8000, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T03:18:25.192Z] INFO: WhatsApp client is ready & authenticated
+[2025-07-25T03:19:08.051Z] INFO: [CLOSE] Payload:
+[2025-07-25T03:19:08.886Z] INFO: [CLOSE] sent to 120363402512794274@g.us
+[2025-07-25T03:20:22.376Z] INFO: [OPEN] Payload:
+[2025-07-25T03:20:22.802Z] INFO: [OPEN] sent to 120363402512794274@g.us
+[2025-07-25T03:23:05.911Z] INFO: Received from 120363284882880824@newsletter: ☊ kaulah kamuku - Fatin
+> request by sari
+[2025-07-25T03:26:07.401Z] INFO: Received from 62811808896-1627270642@g.us: 2407:14c0:100:0::1
+[2025-07-25T03:28:32.328Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T03:28:32.331Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=http://127.0.0.1:8000, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T03:28:43.457Z] INFO: WhatsApp client is ready & authenticated
+[2025-07-25T03:31:05.706Z] INFO: POST /api/notify-handover
+[2025-07-25T03:32:18.980Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T03:32:18.986Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=http://127.0.0.1:8000, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T03:32:25.212Z] INFO: WhatsApp client is ready & authenticated
+[2025-07-25T03:32:30.830Z] INFO: POST /api/notify-handover
+[2025-07-25T03:32:30.831Z] ERROR: Missing group_id or message
+[2025-07-25T03:33:08.645Z] INFO: POST /api/notify-handover
+[2025-07-25T03:33:08.646Z] ERROR: Missing group_id or message
+[2025-07-25T03:35:41.139Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T03:35:41.144Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=http://127.0.0.1:8000, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T03:35:47.146Z] INFO: WhatsApp client is ready & authenticated
+[2025-07-25T03:38:13.161Z] INFO: POST /api/notify-handover payload: [HANDOVER SHIFT]
+Shift   : pagi
+From    : Syahrul Ramadhan
+To      : Agung Septia Bayu
+
+Issues:
+- 1. 20255900001 | ABH-Wangsu-Neu | Link DownBelum ada update.
+
+NOC Command Center
+[2025-07-25T03:38:13.162Z] ERROR: Missing group_id or message
+[2025-07-25T03:38:35.382Z] INFO: Received from 120363402512794274@g.us: /help
+[2025-07-25T03:40:49.767Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T03:40:49.770Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=http://127.0.0.1:8000, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T03:40:56.603Z] INFO: WhatsApp client is ready & authenticated
+[2025-07-25T03:42:05.118Z] INFO: POST /api/notify-handover payload: [HANDOVER SHIFT]
+Shift   : pagi
+From    : Syahrul Ramadhan
+To      : Agung Septia Bayu
+
+Issues:
+- 1. 20255900001 | ABH-Wangsu-Neu | Link DownBelum ada update.
+
+NOC Command Center
+[2025-07-25T03:42:05.119Z] ERROR: Missing group_id or message
+[2025-07-25T03:49:43.312Z] INFO: 🚀 WhatsApp‑Bot running on port 3001
+[2025-07-25T03:49:43.316Z] INFO: Configuration: CLIENT_ID=laravel-bot, BASE=http://127.0.0.1:8000, TIMEZONE=Asia/Jakarta, LOG_LEVEL=info
+[2025-07-25T03:49:56.493Z] INFO: WhatsApp client is ready & authenticated
+[2025-07-25T03:50:38.174Z] INFO: Handover payload message:
+[2025-07-25T03:50:38.926Z] INFO: Handover sent to group 120363402512794274@g.us
+[2025-07-25T03:50:59.934Z] INFO: Received from 120363402512794274@g.us: /onduty

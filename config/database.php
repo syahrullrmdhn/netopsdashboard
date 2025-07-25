@@ -61,7 +61,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],  ],
-            
+
             'customerdb' => [
             'driver'    => 'mysql',
             'host'      => env('DB_CUSTOMER_HOST', '103.130.198.26'),
@@ -75,6 +75,22 @@ return [
             'strict'    => true,
             'engine'    => null,
         ],
+
+        'cacti' => [
+        'driver'    => 'mysql',
+        'host'      => env('CACTI_DB_HOST', '127.0.0.1'),
+        'port'      => env('CACTI_DB_PORT', '3306'),
+        'database'  => env('CACTI_DB_DATABASE', 'cactidb'),
+        'username'  => env('CACTI_DB_USERNAME', 'root'),
+        'password'  => env('CACTI_DB_PASSWORD', ''),
+        'unix_socket' => env('DB_SOCKET', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => false,
+        'engine'    => null,
+    ],
+
 
         'pgsql' => [
             'driver' => 'pgsql',
