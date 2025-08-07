@@ -170,25 +170,28 @@ class NocController extends Controller
         ]);
     }
 
-    public function apiHistory(string $date = null): JsonResponse
-    {
-        $day = $date ?: Carbon::now()->toDateString();
+   public function apiHistory(string $date = null): JsonResponse
+{
+    $day = $date ?: Carbon::now()->toDateString();
 
-        $logs = HandoverLog::with(['fromUser', 'toUser'])
-            ->where('date', $day)
-            ->orderBy('created_at')
-            ->get()
-            ->map(fn($l) => [
-                'shift'     => $l->shift,
+    $logs = HandoverLog::with(['fromUser', 'toUser'])
+        ->where('date', $day)
+        ->orderBy('created_at')
+        ->get()
+        ->map(function($l) {
+            return [
+                'shift'     => ucfirst($l->shift),
                 'from'      => optional($l->fromUser)->name ?? '—',
                 'to'        => optional($l->toUser)->name ?? '—',
                 'issues'    => $l->issues,
                 'notes'     => $l->notes,
                 'timestamp' => optional($l->created_at)->format('Y-m-d H:i') ?? '',
-            ]);
+            ];
+        });
 
-        return response()->json($logs);
-    }
+    return response()->json($logs);
+}
+
 
     /**
      * Format pesan handover untuk WhatsApp
@@ -197,17 +200,34 @@ public static function formatHandoverMessage(HandoverLog $handover): string
 {
     $from   = optional($handover->fromUser)->name  ?? '—';
     $to     = optional($handover->toUser)->name    ?? '—';
-    $issues = strip_tags($handover->issues ?? '');
-    $issues = trim(preg_replace("/\r\n|\r|\n/", "\n- ", $issues));
-    $issues = ltrim($issues, "- ");
+    $shift  = ucfirst($handover->shift ?? '-');
+    $issues = trim(strip_tags($handover->issues ?? ''));
     $notes  = trim(strip_tags($handover->notes ?? ''));
 
-    return "[HANDOVER SHIFT]\n" .
-           "Shift   : {$handover->shift}\n" .
-           "From    : {$from}\n" .
-           "To      : {$to}\n\n" .
-           "Issues:\n- {$issues}\n" .
-           ($notes ? "\nNotes: {$notes}\n" : '') .
-           "\nNOC Command Center";
+    // Format issues list ke numbering
+    $issuesList = collect(preg_split("/\r\n|\r|\n/", $issues))
+        ->filter()
+        ->values()
+        ->map(function($item, $idx) {
+            return ($idx+1) . ". " . trim($item);
+        })
+        ->implode("\n");
+
+    $output  = "📝 [HANDOVER SHIFT: {$shift}]\n";
+    $output .= "────────────────────────\n";
+    $output .= "• Dari : {$from}\n";
+    $output .= "• Ke   : {$to}\n";
+    $output .= "• Waktu: " . ($handover->created_at->format('Y-m-d H:i')) . "\n";
+    $output .= "\n";
+    $output .= "📋 *Daftar Issues:*\n";
+    $output .= $issuesList ?: 'Tidak ada issue.'; // default jika kosong
+    if ($notes) {
+        $output .= "\n\n🗒️ *Catatan:*\n{$notes}";
+    }
+    $output .= "\n────────────────────────\n";
+    $output .= "NOC Command Center | Abhinawa System";
+
+    return $output;
 }
+
 }

@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::get('sla',                         [SLAController::class,'index'])->name('sla.index');
     Route::get('sla/device/{device}',         [SLAController::class,'device'])->name('sla.device');
     Route::get('sla/{sensorId}',              [SLAController::class,'show'])->whereNumber('sensorId')->name('sla.show');
+    Route::get('/sla/export', [SLAController::class, 'export'])->name('sla.export');
     Route::get('sla/{sensorId}/download-pdf', [SLAController::class,'downloadPdf'])->name('sla.downloadPdf');
     Route::get('/performance',               [PerformanceController::class,'index'])->name('performance.index');
     Route::get('/performance/eval',          [PerformanceController::class,'evalDashboard'])->name('performance.eval');
@@ -133,4 +134,9 @@ Route::middleware('auth')->group(function () {
     Route::get('whatsapp-bot',            [WhatsappBotController::class,'index'])->name('whatsapp.bot');
     Route::get('whatsapp-bot/session',    [WhatsappBotController::class,'session']);
     Route::post('whatsapp-bot/send',      [WhatsappBotController::class,'send']);
+    Route::get('/monitoring', [App\Http\Controllers\MonitoringController::class, 'index'])
+    ->name('monitoring.index')
+    ->middleware(['auth']); // atau permission lain jika perlu
+
+
 });

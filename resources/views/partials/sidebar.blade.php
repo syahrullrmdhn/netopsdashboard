@@ -106,13 +106,24 @@
             </div>
         @endcanany
 
-        @can('settings.mail.edit')
-            <x-nav-link href="{{ route('settings.mail.edit') }}" :active="request()->routeIs('settings.mail*')"
-                        class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">
+        @can('manage settings')
+            <x-nav-link
+               href="{{ route('settings.mail') }}"
+               :active="request()->routeIs('settings.mail*')"
+               class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">
                 <x-heroicon-o-envelope class="w-5 h-5 text-gray-400 group-hover:text-indigo-500"/>
-                <span class="font-medium">{{ __('sidebar.email_settings') }}</span>
+                <span class="font-medium">Email</span>
             </x-nav-link>
         @endcan
+
+        @can('cacti.graphs.index') {{-- Atur permission sesuai kebutuhan --}}
+        <x-nav-link href="{{ route('monitoring.index') }}" :active="request()->routeIs('monitoring.index')"
+            class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">
+            <x-heroicon-o-presentation-chart-bar class="w-5 h-5 text-gray-400 group-hover:text-indigo-500"/>
+            <span class="font-medium">Network Monitoring</span>
+        </x-nav-link>
+        @endcan
+
 
         @can('roles.index')
             <x-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles*')"
@@ -129,7 +140,13 @@
                 <span class="font-medium">{{ __('sidebar.user_management') }}</span>
             </x-nav-link>
         @endcan
-
+        @can('whatsapp.bot')
+            <x-nav-link href="{{ route('whatsapp.bot') }}" :active="request()->routeIs('whatsapp.bot')"
+                        class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">
+                <x-heroicon-o-chat-bubble-left-right class="w-5 h-5 text-gray-400 group-hover:text-indigo-500"/>
+                <span class="font-medium">WhatsApp Bot</span>
+            </x-nav-link>
+        @endcan
     </nav>
 
     {{-- User Profile / Sign Out --}}

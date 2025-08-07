@@ -14,106 +14,126 @@ use Illuminate\Support\Facades\Http;
 class TicketController extends Controller
 {
     public function index(Request $request)
-    {
-        $search   = $request->input('search');
-        $status   = $request->input('status');
-        $dateFrom = $request->input('date_from') ?: now()->startOfMonth()->toDateString();
-        $dateTo   = $request->input('date_to')   ?: now()->endOfMonth()->toDateString();
+{
+    $search   = $request->input('search');
+    $status   = $request->input('status');
+    $period   = $request->input('period', 'this_month'); // default: bulan ini
+    $dateFrom = $request->input('date_from');
+    $dateTo   = $request->input('date_to');
 
-        $customerIds = [];
-        if ($search) {
-            $customerIds = Customer::query()
-                ->where('customer', 'like', "%{$search}%")
-                ->orWhere('cid_abh',  'like', "%{$search}%")
-                ->pluck('id')
-                ->toArray();
+    // ===== Period logic =====
+    if ($period && $period !== 'custom') {
+        if ($period === 'this_month') {
+            $dateFrom = now()->startOfMonth()->toDateString();
+            $dateTo   = now()->endOfMonth()->toDateString();
+        } else {
+            // period = "YYYY-MM"
+            [$y, $m] = explode('-', $period);
+            $dateFrom = \Carbon\Carbon::create($y, $m, 1)->startOfMonth()->toDateString();
+            $dateTo   = \Carbon\Carbon::create($y, $m, 1)->endOfMonth()->toDateString();
         }
-
-        $tickets = Ticket::with([
-                'customer.supplier',
-                'customer.group',
-                'customer.serviceType',
-                'user',
-                'updates'
-            ])
-            ->when($search, function($q) use ($search, $customerIds) {
-                $q->where(function($q2) use ($search, $customerIds) {
-                    $q2->where('ticket_number',            'like', "%{$search}%")
-                       ->orWhere('supplier_ticket_number', 'like', "%{$search}%")
-                       ->orWhere('issue_type',             'like', "%{$search}%");
-                    if (! empty($customerIds)) {
-                        $q2->orWhereIn('customer_id', $customerIds);
-                    }
-                });
-            })
-            ->when($status === 'open',   fn($q) => $q->whereNull('end_time'))
-            ->when($status === 'closed', fn($q) => $q->whereNotNull('end_time'))
-            ->whereNotNull('customer_id')
-            ->whereBetween('open_date', [$dateFrom, $dateTo])
-            ->orderByDesc('id')
-            ->paginate(15)
-            ->appends($request->only('search','status','date_from','date_to'));
-
-        $periodStart = Carbon::parse($dateFrom)->startOfDay();
-        $periodEnd   = Carbon::parse($dateTo)->endOfDay();
-        $periodSec   = $periodEnd->diffInSeconds($periodStart);
-
-        $visibleCustomerIds = $tickets->pluck('customer_id')->unique()->filter()->all();
-
-        $linkDownTickets = Ticket::whereIn('customer_id', $visibleCustomerIds)
-            ->whereRaw("LOWER(issue_type) LIKE ?", ['%link down%'])
-            ->whereDate('start_time', '>=', $dateFrom)
-            ->whereDate('start_time', '<=', $dateTo)
-            ->get();
-
-        $slaMap = [];
-        foreach ($visibleCustomerIds as $cid) {
-            $tgt = 99.5;
-            foreach ($tickets as $t) {
-                if ($t->customer_id == $cid && $t->customer && $t->customer->sla) {
-                    $tgt = floatval($t->customer->sla);
-                    break;
-                }
-            }
-
-            $downtime = $linkDownTickets
-                ->where('customer_id', $cid)
-                ->sum(fn($t) => $t->start_time
-                    ? Carbon::parse($t->end_time ?: now())
-                            ->diffInSeconds(Carbon::parse($t->start_time))
-                    : 0
-                );
-
-            $real = max($tgt - round(($downtime / $periodSec) * 100, 2), 0);
-            $statusPct = $tgt > 0
-                ? round(($real / $tgt) * 100, 2)
-                : 0;
-
-            $slaMap[$cid] = [
-                'target'    => $tgt,
-                'real'      => $real,
-                'downtime'  => $downtime,
-                'statusPct' => $statusPct,
-            ];
-        }
-
-        foreach ($tickets as $t) {
-            if ($c = $t->customer) {
-                $cid = $t->customer_id;
-                if (isset($slaMap[$cid])) {
-                    $m = $slaMap[$cid];
-                    $c->sla_target    = $m['target'];
-                    $c->sla_realtime  = $m['real'];
-                    $c->sla_downtime  = $m['downtime'];
-                    $c->sla_statusPct = $m['statusPct'];
-                }
-            }
-        }
-
-        return view('tickets.index', compact(
-            'tickets','search','status','dateFrom','dateTo','periodSec'
-        ));
+    } else {
+        $dateFrom = $dateFrom ?: now()->startOfMonth()->toDateString();
+        $dateTo   = $dateTo   ?: now()->endOfMonth()->toDateString();
     }
+
+    $customerIds = [];
+    if ($search) {
+        $customerIds = \App\Models\Customer::query()
+            ->where('customer', 'like', "%{$search}%")
+            ->orWhere('cid_abh',  'like', "%{$search}%")
+            ->pluck('id')
+            ->toArray();
+    }
+
+    $tickets = \App\Models\Ticket::with([
+            'customer.supplier',
+            'customer.group',
+            'customer.serviceType',
+            'user',
+            'updates'
+        ])
+        ->when($search, function($q) use ($search, $customerIds) {
+            $q->where(function($q2) use ($search, $customerIds) {
+                $q2->where('ticket_number',            'like', "%{$search}%")
+                   ->orWhere('supplier_ticket_number', 'like', "%{$search}%")
+                   ->orWhere('issue_type',             'like', "%{$search}%");
+                if (! empty($customerIds)) {
+                    $q2->orWhereIn('customer_id', $customerIds);
+                }
+            });
+        })
+        ->when($status === 'open',   fn($q) => $q->whereNull('end_time'))
+        ->when($status === 'closed', fn($q) => $q->whereNotNull('end_time'))
+        ->whereNotNull('customer_id')
+        ->whereBetween('open_date', [$dateFrom, $dateTo])
+        ->orderByDesc('id')
+        ->paginate(15)
+        ->appends($request->only('search','status','period','date_from','date_to'));
+
+    // --- SLA & summary section ---
+    $periodStart = \Carbon\Carbon::parse($dateFrom)->startOfDay();
+    $periodEnd   = \Carbon\Carbon::parse($dateTo)->endOfDay();
+    $periodSec   = $periodEnd->diffInSeconds($periodStart);
+
+    $visibleCustomerIds = $tickets->pluck('customer_id')->unique()->filter()->all();
+
+    $linkDownTickets = \App\Models\Ticket::whereIn('customer_id', $visibleCustomerIds)
+        ->whereRaw("LOWER(issue_type) LIKE ?", ['%link down%'])
+        ->whereDate('start_time', '>=', $dateFrom)
+        ->whereDate('start_time', '<=', $dateTo)
+        ->get();
+
+    $slaMap = [];
+    foreach ($visibleCustomerIds as $cid) {
+        $tgt = 99.5;
+        foreach ($tickets as $t) {
+            if ($t->customer_id == $cid && $t->customer && $t->customer->sla) {
+                $tgt = floatval($t->customer->sla);
+                break;
+            }
+        }
+        $downtime = $linkDownTickets
+            ->where('customer_id', $cid)
+            ->sum(fn($t) => $t->start_time
+                ? \Carbon\Carbon::parse($t->end_time ?: now())
+                        ->diffInSeconds(\Carbon\Carbon::parse($t->start_time))
+                : 0
+            );
+        if ($downtime <= 0) {
+            $real = 100.0; // Tidak ada issue, full SLA
+        } else {
+            $real = max($tgt - round(($downtime / $periodSec) * 100, 2), 0);
+            $real = min($real, 100.0);
+        }
+        $statusPct = $tgt > 0
+            ? round(($real / $tgt) * 100, 2)
+            : 0;
+        $slaMap[$cid] = [
+            'target'    => $tgt,
+            'real'      => $real,
+            'downtime'  => $downtime,
+            'statusPct' => $statusPct,
+        ];
+    }
+
+    foreach ($tickets as $t) {
+        if ($c = $t->customer) {
+            $cid = $t->customer_id;
+            if (isset($slaMap[$cid])) {
+                $m = $slaMap[$cid];
+                $c->sla_target    = $m['target'];
+                $c->sla_realtime  = $m['real'];
+                $c->sla_downtime  = $m['downtime'];
+                $c->sla_statusPct = $m['statusPct'];
+            }
+        }
+    }
+
+    return view('tickets.index', compact(
+        'tickets','search','status','dateFrom','dateTo','period','periodSec'
+    ));
+}
 
     public function create()
     {
@@ -283,16 +303,19 @@ class TicketController extends Controller
             ->with(['customer','updates'])
             ->orderBy('open_date')
             ->get()
-            ->map(fn($t) => [
-                'ticket_number' => $t->ticket_number,
-                'customer'      => $t->customer->customer ?? '—',
-                'issue'         => $t->issue_type,
-                'last_update'   => optional($t->updates->first()?->created_at)->format('d/m H:i') ?? 'No updates',
-            ]);
+            ->map(function($t) {
+                $lastUpdate = $t->updates->first(); // Biasanya update terbaru diurutkan DESC, pastikan!
+                return [
+                    'ticket_number' => $t->ticket_number,
+                    'customer'      => $t->customer->customer ?? '—',
+                    'issue'         => $t->issue_type,
+                    'last_update'   => optional($lastUpdate?->created_at)->format('d/m H:i') ?? 'No updates',
+                    'last_update_detail' => $lastUpdate->detail ?? 'No update detail'
+                ];
+            });
 
         return response()->json($tickets);
     }
-
     public function apiShowByNumber(string $ticket_number): JsonResponse
     {
         $ticket = Ticket::with(['customer','updates.user'])
@@ -363,4 +386,101 @@ class TicketController extends Controller
 
         return response()->download($tempPath, $fileName)->deleteFileAfterSend(true);
     }
+   public function openViaWabot(Request $request)
+{
+    // Catat request awal untuk audit/debug
+    \Log::info('openViaWabot request:', $request->all());
+
+    // Validasi minimal: issue_type WAJIB
+    $request->validate([
+        'issue_type' => 'required|string|max:255',
+    ]);
+
+    $input = $request->all();
+    $customer_input = $input['customer_id'] ?? null;
+    $customer = null;
+    $suggestions = collect();
+
+    try {
+        // Cari customer: Numeric = ID, lain = coba cari by nama, else auto-suggest
+        if ($customer_input) {
+            if (is_numeric($customer_input)) {
+                $customer = \App\Models\Customer::find($customer_input);
+            }
+            // Jika bukan ID atau ID tidak ketemu, cari nama persis (case-insensitive)
+            if (!$customer) {
+                $customer = \App\Models\Customer::whereRaw('LOWER(customer) = ?', [strtolower($customer_input)])->first();
+            }
+            // Jika masih tidak ketemu, suggest by LIKE
+            if (!$customer) {
+                $suggestions = \App\Models\Customer::where('customer', 'like', '%' . $customer_input . '%')
+                    ->limit(5)
+                    ->pluck('customer', 'id');
+            }
+            // Jika tetap tidak ketemu dan LIKE kosong, suggest by typo (levenshtein)
+            if (!$customer && $suggestions->isEmpty()) {
+                $all = \App\Models\Customer::pluck('customer', 'id');
+                foreach ($all as $id => $name) {
+                    if (levenshtein(strtolower($customer_input), strtolower($name)) <= 3) {
+                        $suggestions[$id] = $name;
+                    }
+                    if ($suggestions->count() >= 5) break;
+                }
+            }
+        }
+
+        if (!$customer) {
+            \Log::warning('openViaWabot: customer not found for input ['.$customer_input.']');
+            return response()->json([
+                'success'     => false,
+                'suggestions' => $suggestions,
+                'message'     => $suggestions->count()
+                    ? 'Auto-suggest: mungkin yang Anda maksud?'
+                    : 'Tidak ada customer mirip ditemukan.'
+            ], 404);
+        }
+
+        // Siapkan data field wajib. Pastikan sesuai struktur database!
+            $data = [
+                'customer_id'    => $customer->id,
+                'issue_type'     => $input['issue_type'],
+                'problem_detail' => $input['problem_detail'] ?? null,
+                'open_date'      => $input['open_date'] ?? now(),
+                'user_id'        => 1, // mapping ke WhatsApp user jika perlu
+                'alert'          => isset($input['alert']) ? $input['alert'] : false,
+                'sla_duration'   => 0, // <-- ADD THIS!
+            ];
+
+        // Buat tiket
+        $ticket = \App\Models\Ticket::create($data);
+
+        // Kirim notifikasi ke WA group (optional: wrap in try-catch, error WA tidak blokir response)
+        try {
+            \Illuminate\Support\Facades\Http::post(config('services.wa_bot.url') . '/api/notify-ticket-open', [
+                'group_id'      => config('services.wa_bot.group_id'),
+                'ticket_number' => $ticket->ticket_number,
+                'customer'      => $ticket->customer->customer ?? '-',
+                'issue'         => $ticket->issue_type,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('openViaWabot: failed notify WA group: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'success'       => true,
+            'ticket_number' => $ticket->ticket_number,
+            'customer'      => $ticket->customer->customer ?? '-',
+            'message'       => 'Ticket created successfully via WA Bot.'
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('openViaWabot ERROR: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+        return response()->json([
+            'success' => false,
+            'error'   => 'Internal server error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+
 }

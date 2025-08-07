@@ -1,127 +1,72 @@
 @extends('layouts.app')
 
-@section('title', 'SMTP Configuration | Email Settings')
+@section('title','Inbox')
 
 @section('content')
-<div class="min-h-screen bg-gray-50">
-  <div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-      <!-- Header -->
-      <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-700">
-        <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-semibold text-white">Email Server Configuration</h1>
-          <div class="flex-shrink-0">
-            <svg class="h-8 w-8 text-blue-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  @if(empty($messages))
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="p-12 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="mt-2 text-lg font-medium text-gray-900">Google Authentication Required</h3>
+        <p class="mt-1 text-sm text-gray-500">You need to authenticate with Google to access your emails.</p>
+        <div class="mt-6">
+          <a href="{{ route('google.redirect') }}"
+             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
             </svg>
-          </div>
+            Login with Google
+          </a>
         </div>
-        <p class="mt-1 text-sm text-blue-100">Configure your SMTP settings for outgoing emails</p>
-      </div>
-
-      <!-- Success Message -->
-      @if(session('success'))
-        <div class="p-4 bg-green-50 border-l-4 border-green-400">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div class="ml-3">
-              <p class="text-sm text-green-700">{{ session('success') }}</p>
-            </div>
-          </div>
-        </div>
-      @endif
-
-      <!-- Form -->
-      <form method="POST" action="{{ route('settings.mail.update') }}" class="divide-y divide-gray-200">
-        @csrf
-        <div class="px-6 py-5 space-y-6">
-          <!-- Server Settings -->
-          <div>
-            <h2 class="text-lg font-medium text-gray-900 mb-4">SMTP Server Settings</h2>
-            <div class="grid grid-cols-1 gap-y-4 gap-x-6 sm:grid-cols-6">
-              <div class="sm:col-span-3">
-                <label for="mail_host" class="block text-sm font-medium text-gray-700">SMTP Host</label>
-                <input type="text" name="mail_host" id="mail_host" value="{{ old('mail_host', $settings?->mail_host) }}" 
-                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="mail_port" class="block text-sm font-medium text-gray-700">SMTP Port</label>
-                <input type="number" name="mail_port" id="mail_port" value="{{ old('mail_port', $settings?->mail_port) }}" 
-                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="mail_username" class="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" name="mail_username" id="mail_username" value="{{ old('mail_username', $settings?->mail_username) }}" 
-                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="mail_password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" name="mail_password" id="mail_password" value="{{ old('mail_password', $settings?->mail_password) }}" 
-                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="mail_encryption" class="block text-sm font-medium text-gray-700">Encryption</label>
-                <select id="mail_encryption" name="mail_encryption" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                  <option value="" @if(!$settings?->mail_encryption) selected @endif>None</option>
-                  <option value="ssl" @if($settings?->mail_encryption=='ssl') selected @endif>SSL</option>
-                  <option value="tls" @if($settings?->mail_encryption=='tls') selected @endif>TLS</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sender Information -->
-          <div class="pt-6">
-            <h2 class="text-lg font-medium text-gray-900 mb-4">Sender Information</h2>
-            <div class="grid grid-cols-1 gap-y-4 gap-x-6 sm:grid-cols-6">
-              <div class="sm:col-span-3">
-                <label for="from_address" class="block text-sm font-medium text-gray-700">From Address</label>
-                <input type="email" name="from_address" id="from_address" value="{{ old('from_address', $settings?->from_address) }}" 
-                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="from_name" class="block text-sm font-medium text-gray-700">From Name</label>
-                <input type="text" name="from_name" id="from_name" value="{{ old('from_name', $settings?->from_name) }}" 
-                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Form Footer -->
-        <div class="px-6 py-4 bg-gray-50 text-right">
-          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Save Settings
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Test Connection Card -->
-    <div class="mt-6 bg-white shadow rounded-lg overflow-hidden">
-      <div class="px-6 py-5 border-b border-gray-200">
-        <h2 class="text-lg font-medium text-gray-900">Test Email Configuration</h2>
-      </div>
-      <div class="px-6 py-5">
-        <p class="text-sm text-gray-600 mb-4">Send a test email to verify your SMTP settings are configured correctly.</p>
-        <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
-          </svg>
-          Send Test Email
-        </button>
       </div>
     </div>
-  </div>
+  @else
+    <div class="mb-8 flex justify-between items-center">
+      <h1 class="text-2xl font-semibold text-gray-800">Inbox</h1>
+      <a href="{{ route('settings.mail.create') }}"
+         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Compose New
+      </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @foreach($messages as $m)
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {{ Str::limit($m['meta']['From'], 30) }}
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-500">
+                {{ Str::limit($m['meta']['Subject'], 50) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ \Carbon\Carbon::parse($m['meta']['Date'])->format('d M Y H:i') }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <a href="{{ route('settings.mail.show',$m['id']) }}" class="text-blue-600 hover:text-blue-900 transition-colors">View</a>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  @endif
 </div>
 @endsection

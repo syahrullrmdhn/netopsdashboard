@@ -1,2 +1,3 @@
-2025/07/25-10:03:09.864 76ec Creating DB D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\shared_proto_db\metadata since it was missing.
-2025/07/25-10:03:09.867 76ec Reusing MANIFEST D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\shared_proto_db\metadata/MANIFEST-000001
+2025/08/01-12:54:27.580 4528 Reusing MANIFEST D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\shared_proto_db\metadata/MANIFEST-000001
+2025/08/01-12:54:27.595 4528 Recovering log #3
+2025/08/01-12:54:27.596 4528 Reusing old log D:\10. Development Coding\Laravel\network-dashboard\whatsapp-bot\.wwebjs_auth\session-laravel-bot\Default\shared_proto_db\metadata/000003.log 

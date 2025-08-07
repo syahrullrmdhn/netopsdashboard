@@ -73,29 +73,28 @@
         <h2 class="text-lg font-medium text-gray-900">Issues Summary</h2>
       </div>
       <div class="px-6 py-4">
-      <textarea id="issuesEditor" name="issues" class="hidden" rows="20" cols="100">
-      @php
-      // Inisialisasi array untuk menampung setiap baris output
-      $outputLines = [];
-      $no = 1;
+<textarea id="issuesEditor" name="issues" class="hidden" rows="20" cols="100">
+@php
+$outputLines = [];
+$no = 1;
+foreach ($tickets as $t) {
+    $line = "<strong>{$no}. {$t->ticket_number} | {$t->customer->customer} | {$t->issue_type}</strong>";
 
-      // Loop melalui setiap tiket untuk membangun string-nya
-      foreach ($tickets as $t) {
-          // Tentukan teks update: gunakan keterangan jika ada, jika tidak, gunakan teks default
-          $updateText = ($t->updates->isNotEmpty() && $t->updates->first()->keterangan)
-              ? trim($t->updates->first()->keterangan)
-              : 'Belum ada update.';
+    if ($t->updates->count()) {
+        foreach ($t->updates as $update) {
+            $waktu = $update->created_at ? $update->created_at->format('d/m H:i') : '-';
+            $line .= "<br>- " . e($update->detail) . " <span style=\"color:#888\">($waktu)</span>";
+        }
+    } else {
+        $line .= "<br>Belum ada update.";
+    }
+    $outputLines[] = "<p>{$line}</p>";
+    $no++;
+}
+echo implode('', $outputLines);
+@endphp
+</textarea>
 
-          // Buat satu baris lengkap untuk tiket saat ini
-          $outputLines[] = "{$no}. {$t->ticket_number} | {$t->customer->customer} | {$t->issue_type} | {$updateText}";
-          
-          $no++;
-      }
-
-      // Gabungkan semua baris menjadi satu string tunggal dengan pemisah baris baru
-      echo implode("\n", $outputLines);
-      @endphp
-      </textarea>
         <div class="mt-2 flex space-x-2">
           <button type="button" onclick="copyMarkdown()" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-white hover:bg-gray-50">
             Copy as Markdown
@@ -132,7 +131,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/z191hzbqyi5onz961oh7immhn0prmwsmmduc42iolf5bxu8j/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/2vhezy15g5mg5uguxlq25qmi22buyvmefn6ub42p6lkh253u/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
   tinymce.init({
     selector: '#issuesEditor',
@@ -140,7 +139,7 @@
     toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | table | help',
     menubar: false,
     height: 300,
-    forced_root_block : 'p', // Penting agar tiap enter jadi <p> (paragraf)
+    forced_root_block : 'p',
     setup: editor => editor.on('change', () => editor.save())
   });
 

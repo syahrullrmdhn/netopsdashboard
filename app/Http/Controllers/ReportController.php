@@ -15,12 +15,25 @@ class ReportController extends Controller
     /**
      * Tampilkan form laporan dengan filter & chart summary.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::select(['id','customer','cid_abh'])->get();
+        // FILTER dari query string
+        $start = $request->query('start_date', now()->subDays(30)->toDateString()); // default 7 hari terakhir
+        $end   = $request->query('end_date', now()->toDateString());
+
+        $customerId = $request->query('customer_id');
+        $groupId    = $request->query('group_id');
+        $issueType  = $request->query('issue_type');
+
+        // Daftar Customer dan Group (untuk dropdown)
         $groups    = CustomerGroup::select(['id','group_name'])->get();
 
-        // Daftar unique issue_type untuk filter dropdown
+        // Jika filter group, hanya tampilkan customer pada group tsb
+        $customerQuery = Customer::select(['id','customer','cid_abh']);
+        if ($groupId) $customerQuery->where('customer_group_id', $groupId);
+        $customers = $customerQuery->get();
+
+        // Daftar unique issue_type untuk filter dropdown (ambil dari seluruh tiket)
         $issueTypes = Ticket::query()
             ->selectRaw('LOWER(TRIM(issue_type)) as issue_type')
             ->whereNotNull('issue_type')
@@ -32,35 +45,54 @@ class ReportController extends Controller
             ->unique()
             ->values();
 
-        // CHART DATA UNTUK DASHBOARD
-        // Rekap jumlah ticket per type issue (untuk chart)
+        // ========================
+        // CHART & SUMMARY DATA
+        // ========================
+
+        // Query builder dengan filter yang sama untuk semua chart & summary
+        $ticketQ = Ticket::query()->whereBetween('open_date', [
+            Carbon::parse($start)->startOfDay(),
+            Carbon::parse($end)->endOfDay()
+        ]);
+
+        if ($customerId) $ticketQ->where('customer_id', $customerId);
+        if ($groupId) {
+            $ids = $customers->pluck('id')->toArray();
+            $ticketQ->whereIn('customer_id', $ids);
+        }
+        if ($issueType) {
+            $ticketQ->whereRaw('LOWER(TRIM(issue_type)) = ?', [strtolower(trim($issueType))]);
+        }
+
+        // Per type issue
         $chartData = [
-            'by_issue_type' => Ticket::selectRaw('LOWER(TRIM(issue_type)) as issue_type, count(*) as total')
+            'by_issue_type' => $ticketQ->clone()
+                ->selectRaw('LOWER(TRIM(issue_type)) as issue_type, count(*) as total')
                 ->whereNotNull('issue_type')
                 ->where('issue_type', '!=', '')
                 ->groupByRaw('LOWER(TRIM(issue_type))')
                 ->orderBy('total', 'desc')
                 ->pluck('total', 'issue_type')
                 ->toArray(),
-            // total semua ticket
-            'total'         => Ticket::count(),
-            // jumlah closed (punya end_time) & open (end_time null)
-            'total_closed'  => Ticket::whereNotNull('end_time')->count(),
-            'total_open'    => Ticket::whereNull('end_time')->count(),
-            // ticket per bulan 12 bulan terakhir
-            'per_month' => Ticket::selectRaw('DATE_FORMAT(open_date, "%Y-%m") as period, count(*) as total')
-                ->where('open_date', '>=', now()->subMonths(12)->startOfMonth())
+            'total'         => $ticketQ->clone()->count(),
+            'total_closed'  => $ticketQ->clone()->whereNotNull('end_time')->count(),
+            'total_open'    => $ticketQ->clone()->whereNull('end_time')->count(),
+            'per_month'     => $ticketQ->clone()
+                ->selectRaw('DATE_FORMAT(open_date, "%Y-%m") as period, count(*) as total')
+                ->where('open_date', '>=', Carbon::parse($start)->subMonths(12)->startOfMonth())
                 ->groupBy('period')
                 ->orderBy('period')
                 ->pluck('total','period')
                 ->toArray(),
         ];
-        // Rata-rata open per bulan (bisa open+close semua)
         $chartData['avg_open_per_month'] = $chartData['per_month']
             ? round(array_sum($chartData['per_month']) / count($chartData['per_month']), 1)
             : 0;
 
-        return view('reports.index', compact('customers','groups','issueTypes','chartData'));
+        return view('reports.index', compact(
+            'customers', 'groups', 'issueTypes', 'chartData',
+            'start', 'end', 'customerId', 'groupId', 'issueType'
+        ));
     }
 
     /**

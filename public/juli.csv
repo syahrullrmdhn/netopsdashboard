@@ -1,0 +1,123 @@
+No;Customer;Suplier;CID ABH;CID Supplier;Type of Issue;ABH Ticket Number;Supplier Ticket Number;Status;Date/Start Time;Date/End Time;Duration;Timezone;On Duty;Root Cause;Action Taken;Chronology;Cordination To Customer;Cordination To Supplier;Status RFO Send;;;;;;
+1;DCCHW;ABH;202500080-idEX-hybrid;;Destiantion Unreachable;#20250000688;;Closed;01/07/2025 18:49;02/07/2025 0:00;05:11:00;GMT+7;Bayu;There are no issues in the ABH or upstream segments.;Checking circuit log and monitoring;#20250000688 | DCCHW (ABH) | Destiantion Unreachable | 202500080-idEX-hybrid | DCC report mengalami interrupt ke beberapa IP under AS4761 (IOH) list IP provided | Berdasarkan dari hasil visualisasi traceroute berhenti pada hop 3 yang mana PtP antara ABH <> DCCHWNT | Berdasarkan pengecekan lebih lanjut pada network ABH pada IP yang di mentioned tidak ada masalah, hasil ping reply dan traceroute reachable ke arah IP destinations, dan ABH juga sudah advertised IP tersebut ke arah DCC | Pengecekan sudah disampaikan | Confirm ke DCC untuk close ticket | Sudah allow untuk close ticket | CLOSED;Email;Email;yes;;;;;;
+2;Aofei;ABH;"202500007
+RR2-RD2/180124 RBN-CN";;Link Down;#20250000689;;Open;02/07/2025 1:23;02/07/2025 1:30;00:07:00;GMT+7;Haikal;;;;;;;Traffic Drop;Closed;GMT+7;Farhan;WhatsApp;No
+3;Wangsu;ISPL;IDC3D-INTL;;Maintenance;#20250000690;#2025-0070008;Open;09/07/2025 0:00;09/07/2025 5:00;;GMT+7;Tian;Migration PE POP Cyber;Migration PE POP Cyber;Downtime : Up to 2 Hours;Email;Email;No;Req. Allow & Adv. Prefix;Re-Open;GMT+2;Fatoni;Telegram;
+4;OWS;ISPL;AB22025 - idEX-Hybrid;;Maintenance;#20250000691;#2025-0070008;Open;09/07/2025 0:00;09/07/2025 5:00;;GMT+7;Tian;Migration PE POP Cyber;Migration PE POP Cyber;Downtime : Up to 2 Hours;Email;Email;No;Packet Loss;Cancelled;;Syahrul;WeChat;
+5;Baishan;ISPL;202400150 | VLAN795 - IdEX-int-regular;;Maintenance;#20250000692;#2025-0070008;Open;09/07/2025 0:00;09/07/2025 5:00;;GMT+7;Tian;Migration PE POP Cyber;Migration PE POP Cyber;Downtime : Up to 2 Hours;Email;Email;No;Request Permit Access;Rescheduled;;Tian;;
+6;Aofei;ISPL;202500007 | RR2-RD2/180124 RBN-CN;;Maintenance;#20250000693;#2025-0070008;Open;09/07/2025 0:00;09/07/2025 5:00;;GMT+7;Tian;Migration PE POP Cyber;Migration PE POP Cyber;Downtime : Up to 2 Hours;Email;Email;No;;;;;;
+7;Aofei;ISPL;202500020 | Indigo - idEX-transport;;Maintenance;#20250000694;#2025-0070008;Open;09/07/2025 0:00;09/07/2025 5:00;;GMT+7;Tian;Migration PE POP Cyber;Migration PE POP Cyber;Downtime : Up to 2 Hours;Email;Email;No;Maintenance;;GMT/UTC;;;
+8;DCC-Huawei;ISPL;202500080 - idEX-Hybrid;;Maintenance;#20250000695;#2025-0070008;Open;09/07/2025 0:00;09/07/2025 5:00;;GMT+7;Tian;Migration PE POP Cyber;Migration PE POP Cyber;Downtime : Up to 2 Hours;Email;Email;No;Flapping;;GMT+4;Damar;;
+9;AOFEI;ABH;"VLAN111 (Hybrid)
+VLAN112 (Hybrid)";;Maintenance;#20250000696;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to domestic destination;Email;Email;No;Flap & Down;;GMT+5;Dani;;
+10;DCC;ABH;"Wangsu Neu (202300045)
+Huawei (202500080/Non Telkom+International-Line2)";;Maintenance;#20250000697;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to domestic destination;Email;Email;No;Link Error;;GMT+8;Haikal;;
+11;Baishan;ABH;"VLAN793
+VLAN794
+VLAN795
+202500133 - VLAN901
+202500133 - VLAN910
+202500132 - VLAN902";;Maintenance;#20250000698;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;Malfunction on the link;;GMT+9;;;
+12;HK-Seaga;ABH;202400071 (idEX-hybrid);;Maintenance;#20250000699;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to domestic destination;Email;Email;No;High Latency;;;Sufyar;;
+13;3GO;ABH;202400128 (idEX-premium-eb);;Maintenance;#20250000700;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to domestic destination AS63859 MyRepublic and AS38757 Icon Plus;Email;Email;No;Packet Loss & Latency Increase;;;Adit;;
+14;BiznetGio;ABH;AB23033 (idEX-CAC);;Maintenance;#20250000701;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;;;;Bayu;;
+15;MPLS;ABH;AB23030;;Maintenance;#20250000702;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;Bit Error;;;Yuniar Cantik;;
+16;WPT;ABH;202400078 (IdEX-CAC);;Maintenance;#20250000703;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to AS23693 Telkomsel destination;Email;Email;No;;;;;;
+17;Laxo;ABH;202300032;;Maintenance;#20250000704;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;Interupption;;;;;
+18;IDCH;ABH;VLAN2509;;Maintenance;#20250000705;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;No impact, traffic will be backed up in VLAN2502 via another backbone;Email;Email;No;;;;;;
+19;Shopee;ABH;"AB22021-A (Line- 1)
+AB22021-B (Line-2)";;Maintenance;#20250000706;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to AS23693 Telkomsel and AS18004 Smartfren destination;Email;Email;No;;;;;;
+20;Lingcloud;ABH;202400094;;Maintenance;#20250000707;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;Power Low;;GMT+6+30;Giovanni;;
+21;GTT;ABH;AB22007 (idEX-CAC);;Maintenance;#20250000708;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to AS23693 Telkomsel destination;Email;Email;No;Intermittent;;;;;
+22;NTTG;ABH;"202400152 - Campina
+202400250 - PHC";;Maintenance;#20250000709;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;Network Freeze;;;;;
+23;Running River;ABH;202500054;;Maintenance;#20250000710;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;Req. Adjust route;;;;;
+24;Magna;ABH;202500012 (IdEX-hybrid);;Maintenance;#20250000711;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;BGP Down;;;;;
+25;AOFEI;ABH;"VLAN57 (idEX-transport)
+202400051 (Tencet ISC)";;Maintenance;#20250000712;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;Prefix Leaking;;;;;
+26;DCC;ABH;"Wangsu Nex (202400221)
+ Metro-E sigma<>cyber (202400154)
+Huawei (202500080/Non Telkom+International-Line1)";;Maintenance;#20250000713;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;;;;;;
+27;HK-Seaga;ABH;"202500098 (idEX-hybrid)
+VLAN898
+VLAN899
+VLAN896
+";;Maintenance;#20250000714;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;;;;;;
+28;PT Rajadata Parama Transnetwork;ABH;AB23028;;Maintenance;#20250000715;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to AS23693 Telkomsel destination;Email;Email;No;Destiantion Unreachable;;;;;
+29;Seabank;ABH;"AB21005 Line- 1 (IdEX-CAC)
+AB21015 Line-2 (IdEX-CAC)";;Maintenance;#20250000716;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Route lost to AS23693 Telkomsel destination;Email;Email;No;Terminated;;;;;
+30;CBC;ABH; (202400143 | vlan877 | P2P: 10.100.246.37/30 | idEX-DIA);;Maintenance;#20250000717;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Logical connection down;Email;Email;No;;;;;;
+31;Seabank;ABH;(AB21015 | idEX-CAC);;Maintenance;#20250000718;;Open;11/07/2025 9:00;11/07/2025 11:30;;GMT+7;Tian;Preventive maintenance to migrate one of the physical and logical links from Cyber1 to Edge1. This is to ensure service redundancy and diversity, and to eliminate any single point of failure.;Preventive maintenance to migrate one of the physical and logical links from Cyber1 to Edge1. This is to ensure service redundancy and diversity, and to eliminate any single point of failure.;Downtime for affected SIDs for up to 2 hours;Email;Email;No;;;;;;
+32;CBC;ABH; (202400143 | vlan876 | P2P: 10.100.246.33/30 | idEX-DIA);;Maintenance;#20250000719;;Open;11/07/2025 9:00;11/07/2025 11:30;;GMT+7;Tian;Preventive maintenance to migrate one of the physical and logical links from Cyber1 to Edge1. This is to ensure service redundancy and diversity, and to eliminate any single point of failure.;Preventive maintenance to migrate one of the physical and logical links from Cyber1 to Edge1. This is to ensure service redundancy and diversity, and to eliminate any single point of failure.;Downtime for affected SIDs for up to 2 hours;Email;Email;No;;;;;;
+33;AOFEI;ABH;;;Maintenance;#20250000720;;Open;11/07/2025 15:00;11/07/2025 19:00;;GMT+7;Tian;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;Preventive maintenance to upgrade the OS version of the Core Switch at Cyber1 in order to resolve a known LACP initiation bug present in the current software version (ver.22.2R3-S2.8 to ver.23.4R2-Sx).;;Email;Email;No;;;;;;
+34;ABH;HSP;NEU<>IDC3D;;Link Down;#20250000721;;Open;03/07/2025 13:58;04/07/2025 18:09;04:11:06;GMT+7;Tian;;;;WhatsApp;WhatsApp;yes;Request Check Prefix ;;;;;
+35;ISPL;ABH;;;Link Down;#20250000722;;Open;;;;GMT+7;Tian;;;;WhatsApp;WhatsApp;yes;;;;;;
+36;Aofei;ISPL;;220901-IPLC-RP_JKBR;Link Down;#20250000723;#2025-0070048;Open;03/07/2025 14:11;03/07/2025 15:43;01:32:00;GMT+7;Tian;;;;WeChat;Email;yes;;;;;;
+37;DCC;ABH;VLAN812, NEU<>IDC;;Link Down;#20250000724;;Closed;03/07/2025 14:45;03/07/2025 16:01;01:16:00;GMT+7;Tian;Link down impact FO cut transmission IDC3D<>NEU;Link recovered after resplice;#20250000724 | DCC (ABH) | VLAN812, NEU<>IDC | Link Down | Impact issue HSP | FU update progress dari HSP | Sudah kembali recovered | CLOSED;Email;Email;yes;;;;;;
+38;Shopee;ABH;"AB22021-A (Line- 1)
+AB22021-B (Line-2)";;BGP Down;#20250000725;;Open;04/07/2025 1:06;04/07/2025 1:25;00:19:00;GMT+7;Haikal;;;;Email;Email;No;;;;;;
+39;HK-Seaga;ABH;Vlan898;;Destiantion Unreachable;#20250000726;;Closed;04/07/2025 9:35;04/07/2025 10:01;00:26:00;GMT+7;Tian;;;#20250000726 | Wangsu (ABH) | VLAN898 - Wangsu IDC3D-INTL | Wangsu report destinationation Unreach ke destinasi Hongkong | dari mtr yang diberikan terlihat Asymetric route yang mana turun via ABH<>THC dan naik via OIXP | Sudah disampaikan hasil pengecekannya | FU konfirmasi dari Wangsu | CLOSED;Email;Email;yes;;;;;;
+40;DCC-Huawei;ABH;;;Destiantion Unreachable;#20250000727;;Open;;;;GMT+7;Tian;;;;Email;Email;yes;;;;;;
+41;ABH;IDC3D;;Rack AU-135 & MMR-R17;Request Permit Access;#20250000728;;Open;04/07/2025 17:00;04/10/2025 23:59;06:59:00;GMT+7;Luthfi;;;Request Done;Email;Email;No;;;;;;
+42;Baoshuo;Crossnet;BTIIG;BTIIG;Link Down;#20250000729;;Open;05/07/2025 10:00;05/07/2025 22:15;12:15:00;GMT+8;Tian;"FO cut KM 27 from TS Matano impact of cable hit by car and 
+found cable stripped from jacket at km 24 from TS Matano";"Perform permanent jumper and closure installation for 
+connection";Pro-active #20250000729 | Baoshuo (Crossnet) | Link Down | BTIIG | Crossnet menginfokan link down pada 05/07/2025 09:00 ke BTIIG dan sedang prepare untuk pengecekan | Terdapat 2 FO Cut info dari Crossnet, titik cut pertama sudah selesai disambung dan saat ini lanjut titik cut ke 2 | FU untuk percepatan dan keep update ke customer | Link sudah kembali up periode 22:15 WITA after penyambungan | Sudah disampaikan ke Baoshuo | FU detail RCA ke CN | RFO available | Review | CLOSED;;;;;;;;;
+43;Baoshuo;Crossnet;BTIIG;BTIIG;Link Down;#20250000730;;Open;06/07/2025 8:10;;;GMT+8;Tian;;;;;;;;;;;;
+44;Biznet GIO;ABH-Telkom;;;Req. Allow & Adv. Prefix;#20250000731;;Closed;03/07/2025 14:52;07/07/2025 15:30;00:38:00;GMT+7;Tian;;;#20250000731 | Biznet Gio (ABH-Telkom) | Req Adjust Prefix | Customer report Prefix mereka 103.150.100.0/24 masih dapat direach via direct Maxindo | Minta telkom untuk jangan advertised ke Maxindo | FU ke Telkom | Update dari Telkom bahwa permintaan ini harus di ajukan oleh pihak AM karena sebelumnya ABH hanya meminta untuk excludekan Pub-Exc | Sudah disampaikan ke internal | Minta LOA ke Biznet Gio untuk semua prefixnya agar prefix-prefix tersebut tidak diadvertised ke selain Telkom | FU LOAnya | LOA sudah di berikan dan di process | CLOSED;WhatsApp;WhatsApp;No;;;;;;
+45;Baoshuo;Crossnet;BTIIG;BTIIG;Interupption;#20250000732;;Open;;;;;Tian;;;;;;;;;;;;
+46;NTTG-PHC;ICON +;202400250;1,11202E+11;Link Down;#20250000733;;Open;07/07/2025 15:47;;;GMT+7;Luthfi;;;;Email;WhatsApp;yes;Power Degrade;;GMT+6;;;
+47;Wangsu IEPL;DCC;202400109;ABH202406110001;Interupption;#20250000734;DCC202507071837;Open;07/07/2025 16:44;07/07/2025 18:00;01:16:00;GMT+7;Luthfi;;;;WeChat;WeChat;yes;;;;;;
+48;;;;;;#20250000735;;;;;;;;;;;;;;Jitter;;PDT;;;
+49;;;;;;#20250000736;;;;;;;;;;;;;;Packet Loss;;;;;
+50;;;;;;#20250000737;;;;;;;;;;;;;;;;;;;
+51;;;;;;#20250000738;;;;;;;;;;;;;;Routing Error;;;;;
+52;;;;;;#20250000739;;;;;;;;;;;;;;;;;;;
+53;;;;;;#20250000740;;;;;;;;;;;;;;;;;;;
+54;;;;;;#20250000741;;;;;;;;;;;;;;;;;;;
+55;;;;;;#20250000742;;;;;;;;;;;;;;;;;;;
+56;;;;;;#20250000743;;;;;;;;;;;;;;;;;;;
+57;;;;;;#20250000744;;;;;;;;;;;;;;;;;;;
+58;;;;;;#20250000745;;;;;;;;;;;;;;;;;;;
+59;;;;;;#20250000746;;;;;;;;;;;;;;;;;;;
+60;;;;;;#20250000747;;;;;;;;;;;;;;;;;;;
+61;;;;;;#20250000748;;;;;;;;;;;;;;;;;;;
+62;;;;;;#20250000749;;;;;;;;;;;;;;;;;;;
+63;;;;;;#20250000750;;;;;;;;;;;;;;;;;;;
+64;;;;;;#20250000751;;;;;;;;;;;;;;;;;;;
+65;;;;;;#20250000752;;;;;;;;;;;;;;;;;;;
+66;;;;;;#20250000753;;;;;;;;;;;;;;;;;;;
+67;;;;;;#20250000754;;;;;;;;;;;;;;;;;;;
+68;;;;;;#20250000755;;;;;;;;;;;;;;;;;;;
+69;;;;;;#20250000756;;;;;;;;;;;;;;;;;;;
+70;;;;;;#20250000757;;;;;;;;;;;;;;;;;;;
+71;;;;;;#20250000758;;;;;;;;;;;;;;;;;;;
+72;;;;;;#20250000759;;;;;;;;;;;;;;;;;;;
+73;;;;;;#20250000760;;;;;;;;;;;;;;;;;;;
+74;;;;;;#20250000761;;;;;;;;;;;;;;;;;;;
+75;;;;;;#20250000762;;;;;;;;;;;;;;;;;;;
+76;;;;;;#20250000763;;;;;;;;;;;;;;;;;;;
+77;;;;;;#20250000764;;;;;;;;;;;;;;BGP Flap;;;;;
+78;;;;;;#20250000765;;;;;;;;;;;;;;;;;;;
+79;;;;;;#20250000766;;;;;;;;;;;;;;;;;;;
+80;;;;;;#20250000767;;;;;;;;;;;;;;;;;;;
+81;;;;;;#20250000768;;;;;;;;;;;;;;;;;;;
+82;;;;;;#20250000769;;;;;;;;;;;;;;;;;;;
+83;;;;;;#20250000770;;;;;;;;;;;;;;;;;;;
+84;;;;;;#20250000771;;;;;;;;;;;;;;;;;;;
+85;;;;;;#20250000772;;;;;;;;;;;;;;;;;;;
+86;;;;;;#20250000773;;;;;;;;;;;;;;;;;;;
+87;;;;;;#20250000774;;;;;;;;;;;;;;;;;;;
+88;;;;;;#20250000775;;;;;;;;;;;;;;;;;;;
+89;;;;;;#20250000776;;;;;;;;;;;;;;;;;;;
+90;;;;;;#20250000777;;;;;;;;;;;;;;;;;;;
+91;;;;;;#20250000778;;;;;;;;;;;;;;;;;;;
+92;;;;;;#20250000779;;;;;;;;;;;;;;;;;;;
+93;;;;;;#20250000780;;;;;;;;;;;;;;;;;;;
+94;;;;;;#20250000781;;;;;;;;;;;;;;;;;;;
+95;;;;;;#20250000782;;;;;;;;;;;;;;;;;;;
+96;;;;;;#20250000783;;;;;;;;;;;;;;;;;;;
+97;;;;;;#20250000784;;;;;;;;;;;;;;;;;;;
+98;;;;;;#20250000785;;;;;;;;;;;;;;;;;;;
+99;;;;;;#20250000786;;;;;;;;;;;;;;;;;;;
+100;;;;;;#20250000787;;;;;;;;;;;;;;;;;;;
+101;;;;;;#20250000788;;;;;;;;;;;;;;;;;;;

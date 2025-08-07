@@ -1,0 +1,303 @@
+ ;Customer;Suplier;CID ABH;CID Supplier;Type of Issue;ABH Ticket Number;Supplier Ticket Number;Status;Date/Start Time;Date/End Time;Duration;Timezone;On Duty;Root Cause;Action Taken;Chronology;Cordination To Customer;Cordination To Supplier;Status RFO Send;;;;;;
+1;Aofei;ABH-OWS;"202400051
+RR2-RD2/180124 RBN-CN";10742-OWS-ABH-SIN IPT;Destiantion Unreachable;#20250000196;;Closed;02/03/2025 21:38:00;03/04/2025 9:52;###############################################################################################################################################################################################################################################################;GMT+8;Luthfi;Aofei report bahwa hasil test ke destinasi 103.1,51,1 mengalami unreach dari source 43.159.72.37 periode 2025-02-27 21:38:47 GMT+08 dan meminta untuk di chec;hasil pengecekan IP tersebut tidak didapatkan di route filter maupun global ;#20250000196 | Aofei (ABH-OWS) | Destiantion Unreachable | RR2-RD2/180124 RBN-CN | Aofei report bahwa hasil test ke destinasi 103.28.74.41 mengalami unreach dari source 43.159.72.37 periode 2025-02-27 21:38:47 GMT+08 dan meminta untuk di check | Sudah di open ticket ke OWS | Setelah di make sure Aofei confirm bahwa periode issue 2025-03-01 05:32:46 GMT+08 | Sedang di make sure ke OWS | Dari hasil pengecekan OWS bahwa utilisasi bandwith normal dan ip tersebut tidak didapatkan di route filter maupun global, suspect adanya issue di ip destinasi | Sudah disampaikan ke Aofei | Aofei konfirmasi mengalami kekeliruan dan meminta untuk di check ulang ke destinasi 103.1.51.1 | FU ke OWS | hasil pengecekan dari OWS ip tersebut juga sama seperti ip sebelumnya tidak didapatkan di route filter maupun global | Sudah disampaikan ke Aofei | FU konfirmasi untuk close ticket | CLOSED;Email;Email;yes;Link Down;Open;GMT/UTC;Luthfi;Email;yes
+2;Aofei;ABH-OWS;"202400051
+RR2-RD2/180124 RBN-CN";10742-OWS-ABH-SIN IPT;Destiantion Unreachable;#20250000197;;Open;02/03/2025 20:30:00;03/04/2025 10:38;###############################################################################################################################################################################################################################################################;GMT+7;Syahrul;aofei report mengalami destination unreachable untuk destinasi berikut 103.93.93.193,103.159.96.2,103.93.93.186,103.93.93.194,103.159.96.1,103.93.93.185, 103.159.96.189, 103.159.96.97;hasil pengecekan noc terdapat route reset pada destinasi tersebut;#20250000197 | Aofei (ABH-OWS) | Destiantion Unreachable | RR2-RD2/180124 RBN-CN | aofei report mengalami destination unreachable untuk destinasi berikut 103.93.93.193,103.159.96.2,103.93.93.186,103.93.93.194,103.159.96.1,103.93.93.185, 103.159.96.189, 103.159.96.97 | sudah direport ke OWS via wechat | Fu pengecekan OWS | hasil pengecekan ows normal | hasil pengecekan noc terdapat route reset pada destinasi tersebut | FU konfirmasi untuk close ticket | CLOSED;Email;WeChat;yes;Traffic Drop;Closed;GMT+2;Farhan;WhatsApp;No
+3;China Embasy;Telkom;202400112;"36.94.17.50 ip CE
+36.94.17.49 ip Gateway Telkom";Packet Loss;#20250000198;;Closed;03/03/2025 12:20;06/03/2025 8:34;###############################################################################################################################################################################################################################################################;GMT+7;Luthfi;Customer report ping ke 8,8,8,8 mengalami paket loss;Hasil pengecekan NOC tidak detect paket loss ;#20250000198 | CE (Telkom) | Packet Loss | 202400112 | CE report saat test ping ke 8.8.8.8 mengalami packet loss | Sudah di mintakan test ke Telkom | Initial check sudah diberikan bahwa dari monitoring ip tidak detect packet loss ke ip pelanggan | Mintakan test ke ip customer dan 8.8.8.8 ke Telkom lalu share ke CE | FU ke Telkom | Konfirmasi dari Customer sudah tidak ada problem | CLOSED;Email;Email;yes;Req. Allow & Adv. Prefix;Re-Open;GMT+3;Fatoni;Telegram;
+4;CBC;ABH;202400143;;High Latency;#20250000199;;Closed;03/03/2025 16:24;06/03/2025 8:20;###############################################################################################################################################################################################################################################################;GMT+7;Syahrul;high latency ke Websites: docs.google.com, mail.google.com;No action, suspect issue ada pada jaringan local customer;#20250000199 | CBC (ABH) | High Latency | CBC report high latency ke Websites: docs.google.com, mail.google.com | dari hasil tracertroute yang mereka kasih dari Hop 1 dan 2 sudah terjadi paket loss yang mana suspect issue diinternal mereka | dicek dari PE3 normal | FU konfirmasi ke CBC | CLOSED;WhatsApp;WhatsApp;No;Packet Loss;Cancelled;GMT+4;Syahrul;WeChat;
+5;Infobip;ABH-DCC; AB23039;SDPP202308040002;High Latency;#20250000200;TT-2025035422;Closed;05/03/2025 12:00;06/03/2025 1:55;###############################################################################################################################################################################################################################################################;GMT+7;Haikal;Problem occurred due to a subsea cable cut on the main link, resulting in a switch to the backup link causes latency to increase.;Auto switch over to backup link;#20250000200 | Infobip (ABH-DCC) |  AB23039 (SDPP202308040002) | Infobip report bahwa mengalami latency increase | Sedang di tanyakan ke DCC unt-uk segment signgapore - frankfurt | FU pengecekan dan reason nya | Update dari DCC bahwa hal ini disebabkan oleh adanya Jitter pada SG <> FR | Sudah disampaikan ke infobif | FU RFO detail ke DCC | Info dari DCC saat ini masih menggunakan backup link | ETR 5 April 2025 | Buat RFO dan konfirmasi ke internal | RFO infobip sudah di sampaikan | Keep on eye ticket DCC untuk update progress Repairnya | Infobip sudah back to traffic  | Update: The estimated time for recovery (ETR) is expected to be on April 15, 2025 | Completed the AAE-1 submarine cable was permanently repaired on April 10th at 20:52 (GMT+8) | CLOSED;Email;Email;yes;Request Permit Access;Rescheduled;GMT+5;Tian;;
+6;Seabank;ABH;AB21015;;Traffic Drop;#20250000201;;Closed;06/03/2025 10:49;06/03/2025 10:54;;GMT+7;Tian;Sempat terlihat traffic drop;konfirmasi dari customer tidak ada aktivitas juga, untuk case bisa lanjut dimonitoring saja;#Proactive Seabank (ABH) | AB21015 | Terpantau traffic sempat drop | suspect ada adjustmen disisi Sea | Sedang dikonfirmasi ke SEA | tidak ada activity info dari Sea | CLOSED;Email;Email;No;;;GMT+6;;;
+7;OWS;ISC;Permit Acces&Outbound;JC02&JC03;Request Permit Access;#20250000202;;Open;;;;GMT+7;Luthfi;;;;Email;Email;No;Maintenance;;GMT+6+30;Haikal;;
+8;Aofei;ABH-OWS;"202400051
+RR2-RD2/180124 RBN-CN";10742-OWS-ABH-SIN IPT;Destiantion Unreachable;#20250000203;;Closed;07/03/2025 0:52;;;GMT+8;Haikal;Route reset;No action from Abhinawa;#20250000203 | Aofei (ABH-OWS) | Destiantion Unreachable | Aofei report tidak bisa reach ke beberapa destination dengan IP  156.251.76.0/24 | Dalam pengecekan table route nya sempat reset pada jam tersebut | Sudah disampaikan pengecekannya ke Aofei | AOFEI masih confirm ke customer mereka terkait ini | confirm close dari aofei | CLOSED;Email;WeChat;No;Flap & Down;;GMT+7;Dani;;
+9;CTID-YUTO;Fibernet;202400153;IN18B056;Bandwitch;#20250000204;;Closed;7/3/2025 9:21:00;7/3/2025 14:59:00;05:38:00;;Fatoni;No anomaly;Checking;#20250000204 | Yuto (ABH-Fibernet) | 202400153 | CTID report bahwa yuto tidak dapat reach bandwith sesuai order (100MB) | dari hasil pengecekan traffic yuto memang kecil < 30MB dan tidak ada indikasi terlimit (graph rata) | sudah di sampaikan ke CTID parallel meminta test speed dari sisi yuto untuk pengecekan lebih lanjut | Confirm dari Yuto boleh close dahulu ticket nya | CLOSED;WhatsApp;WhatsApp;No;Flapping;;GMT+8;Damar;;
+10;Running River (Donlim);ABH;202500054202500054;;Packet Loss;#20250000205;;Closed;08/03/2025 9:29;11/03/2025;;GMT+7;Tian;No detect loss from ABH monitoring, need to makesure Donlim to give a MTR and analyze the problem;Checking Monitoring;#20250000205 | Running River-Donlim (ABH) | 202500054202500054 | Packet loss |  dari hasil pengecekan tidak menemukan adanya paket loss | sudah disampaikan ke customer | Sedang dimintakan MTR dari mereka untuk pengecekan lebih lanjut | FU konfirmasi status ke Donlim | Update dari Donlim masih mengalami packet loss namun saat di compare di grafana tidak ada anomally | Mintakan traceroute ke RR Donlim | Test ping berjalan dan monit grafana | RTT sudah diberikan per 10/03/2025 pagi | CLOSED;Email;Email;No;Maintenance;;GMT+9;;;
+11;ABH;Moratel;2957012100081987;103.129.216.189;Request Check Prefix ;#20250000206;;Closed;10/03/2025 16:13;;;GMT+7;Luthfi;;;#20250000206 | ABH (MTL) | Request check prerfix | 2957012100081987 | Tanyakan ke mora mengapa 103.129.216.0/24 tidak di terima dari peer ABH<>MTL | FU ke MTL | Update dari Mora bahwa IP tersebut adalah IP internal MTI | CLOSED;Email;Email;No;Malfunction on the link;;PDT;;;
+12;Aofei;ABH;;;;#20250000207;;;;;;;;;;;;;;High Latency;;;Sufyar;;
+13;Aofei;ABH-OWS;"202400051
+RR2-RD2/180124 RBN-CN";10742-OWS-ABH-SIN IPT;High Latency;#20250000208;;Closed;07/03/2025 0:52;;;GMT+8;Luthfi;;;2. #20250000208 | Aofei (ABH-OWS) | High Latency | 202400051 RR2-RD2/180124 RBN-CN | Aofei report bahwa mengalami High Latency sejak 04 Maret 20225 dan meminta untuk di optimize | Sudah di open ticket ke Aofei | Sudah di mintakan check ke OWS | Saat di check bahwa via OWS pathnya lebih pendek dan latency lebih rendah | Sudah di sounding ke internal apakah perlu dimintakan untuk rerouted ke ISPL atau optimize disisi ABH | Preconfig sudah di siapkan untuk adjust disisi ABH parrarel mintakan ke ISPL untuk adjust prefix 156.251.71.0/24 besok | FU High latency ke ISPL | Remind ke internal untuk deactive term 370 jika utilisasi OWS IPT sudah rendah kembali | Confirm untuk close ticket ke Aofei | Aofei sudah allow close tiket | CLOSED;Email;Email;No;Flap & Down;;GMT+7;Dani;;
+14;OWS;ABH;VLAN4062 & VLAN4063;156.230.0.0/16;Req. Allow & Adv. Prefix;#20250000209;;Closed;10/03/2025 16:49;;;GMT+7;Luthfi;;;#20250000209 | OWS (ABH) | VLAN4062 | Req allow prefix | OWS meminta allow prefix 156.230.0.0/16 AS984 | Sudah di accept di sisi ABH sesuai LOA | Requst allow ke upstream | CLOSED;Email;Email;No;;;;Bayu;;
+15;ABH;ISPL;240607-ABH-IPT-APJ-VLAN779;;High Latency;#20250000210;;;;;;;;;;;;;;Bit Error;;;;;
+16;Sea;ABH;"202400081
+AB22021-A (Line-1)
+AB22021-B (Line-2)
+AB21005
+AB21015";"""LL NEU-DCI (LA)
+CAC (TELKOM)
+
+0054991134""
+0054991134";Network Freeze;#20250000211;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+17;DCC;ABH;"202400081
+AB22021-A (Line-1)
+AB22021-B (Line-2)
+AB21005
+AB21015";ALL CID;Network Freeze;#20250000212;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Interupption;;;;;
+18;Baishan;ABH;"AB23041
+ vlan606
+202400149
+202300006
+202400150
+ 202400096";ALL CID;Network Freeze;#20250000213;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+19;Wangsu;ABH;"202400070
+202400071
+202400072
+202400071
+202400121
+202400109
+202400110
+202400111
+202400168";"
+
+
+
+
+ABH202406110001 (DCC)
+
+";Network Freeze;#20250000214;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+20;3GO;ABH;202400128;202400128;Network Freeze;#20250000215;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Power Low;;;Giovanni;;
+21;Aofei;ABH;"AB22001
+202400051
+Vlan57
+Vlan58
+AB22012
+AB22013
+AB22014
+""AB20013-1 Vlan111""
+""AB20013-2 Vlan112""";"
+220901-IPLC-RP_JKBR
+241102-10G-IPLC
+320100011";Network Freeze;#20250000216;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Intermittent;;;;;
+22;OWS;ABH;"AB22024
+AB22025
+202400118
+202400123
+202400131
+202400132
+202400141";"AB22024
+AB22025
+202400118
+202400123
+202400131
+202400132
+202400141";Network Freeze;#20250000217;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Network Freeze;;;;;
+23;ISPL;ABH;"202400082-A
+202400082-B
+VLAN1102";"202400082-A
+202400082-B
+VLAN1102";Network Freeze;#20250000218;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Req. Adjust route;;;;;
+24;CTG-Ali;ABH;"202300003
+202300001
+202400066
+202400153";"""Cable ID/XC: 363/NET X/2020
+Cable ID/XC: 364/NET X/2020""
+156039
+IN18B056";Network Freeze;#20250000219;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;BGP Down;;;;;
+25;WPT;ABH;"202400078
+vlan2002
+vlan2527";"202400078
+vlan2002
+vlan2527";Network Freeze;#20250000220;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Prefix Leaking;;;;;
+26;FPT;;202300038;;Network Freeze;#20250000221;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+27;Jupiter;;AB23028 ;;Network Freeze;#20250000222;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+28;Laxo;;"202300032
+202400002
+202400079";;Network Freeze;#20250000223;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Destiantion Unreachable;;;;;
+29;MPLS;;AB23030;;Network Freeze;#20250000224;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Terminated;;;;;
+30;Biznetgio;;AB23033 ;;Network Freeze;#20250000225;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+31;IDCH;;AB21009;;Network Freeze;#20250000226;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+32;THC;;AB22011;;Network Freeze;#20250000227;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+33;AGTI;;VLAN525;;Network Freeze;#20250000228;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+34;Infobip;;AB23039;;Network Freeze;#20250000229;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Request Check Prefix ;;;;;
+35;GTT;;AB22007 ;;Network Freeze;#20250000230;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+36;CU;;202300020;;Network Freeze;#20250000231;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+37;Lingcloud;;202400094;;Network Freeze;#20250000232;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+38;NTTG Campina;;"202400152
+202400250";;Network Freeze;#20250000233;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+39;Super Sea Cable Networks Pte Ltd;;202400003;;Network Freeze;#20250000234;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+40;PT Mitra Teknologi Andalan Utama;;202400088;;Network Freeze;#20250000235;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+41;CBC Tech International Ltd;;"202400143
+202400144
+202400142";;Network Freeze;#20250000236;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+42;PT Andhika Lines;;202400184;;Network Freeze;#20250000237;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+43; PT. Herza Digital Indonesia;;202500002;;Network Freeze;#20250000238;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+44;"""Indosat Ooredoo Hutchison
+(IOH)""";;AB23029;;Network Freeze;#20250000239;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+45;magna;;202500012;;Network Freeze;#20250000240;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+46;PT. NTT Indonesia;;202500048;;Network Freeze;#20250000241;;;26/03/2025;08/04/2025;;;;;;;;;;Power Degrade;;;;;
+47; Running River Network Technology Limited;;202500054202500054;;Network Freeze;#20250000242;;;26/03/2025;08/04/2025;;;;;;;;;;;;;;;
+48;edge;ABH;edge;edge;Network Freeze;#20250000243;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Jitter;;;;;
+49;mdc;ABH;mdc;mdc;Network Freeze;#20250000244;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Packet Loss;;;;;
+50;isc;ABH;isc;isc;Network Freeze;#20250000245;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+51;idc3d;ABH;idc3d;idc3d;Network Freeze;#20250000246;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;Routing Error;;;;;
+52;Biznet;supplier;Biznet;Biznet;Network Freeze;#20250000247;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+53;clouddata;supplier;clouddata;clouddata;Network Freeze;#20250000248;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+54;crossnet;supplier;crossnet;crossnet;Network Freeze;#20250000249;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+55;dcc;supplier;dcc;dcc;Network Freeze;#20250000250;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+56;hsp;supplier;hsp;hsp;Network Freeze;#20250000251;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+57;ispl;supplier;ispl;ispl;Network Freeze;#20250000252;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+58;jlm;supplier;jlm;jlm;Network Freeze;#20250000253;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+59;lighstroam;supplier;lighstroam;lighstroam;Network Freeze;#20250000254;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+60;linknet;supplier;linknet;linknet;Network Freeze;#20250000255;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+61;lintasarta;supplier;lintasarta;lintasarta;Network Freeze;#20250000256;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+62;moratel;supplier;moratel;moratel;Network Freeze;#20250000257;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+63;ows;supplier;ows;ows;Network Freeze;#20250000258;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+64;powertel;supplier;powertel;powertel;Network Freeze;#20250000259;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+65;smartfren;supplier;smartfren;smartfren;Network Freeze;#20250000260;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+66;telkom;supplier;telkom;telkom;Network Freeze;#20250000261;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+67;telkomsat;supplier;telkomsat;telkomsat;Network Freeze;#20250000262;;;26/03/2025;08/04/2025;;;;;;;;;;;;;;;
+68;tis;supplier;tis;tis;Network Freeze;#20250000263;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+69;xl;supplier;xl;xl;Network Freeze;#20250000264;;;26/03/2025;08/04/2025;Has Announced;GMT+7;Yuniar Cantik;;;;;;;;;;;;
+70;ABH;BIZNET;;;Req. Allow & Adv. Prefix;#20250000265;;Open;;;;GMT+7;Fatoni;;;;Email;Email;No;;;;;;
+71;ABH;BIZNET;182.253.255.0/24;;Req Check Prefix;#20250000266;;Closed;;;;GMT+7;Luthfi;;;#20250000266 | ABH (BIZNET) | Req Check Prefix | Prefix 182.253.255.0/24 telah di terima dari peer Biznet namun di traceroute unreachable | Sudah di open ticket ke Biznet | FU hasil pengecekan dari Biznet | CLOSED;Email;Email;No;;;;;;
+72;OWS;Linknet;156.230.0.0/16 AS984; Peer IP 202.73.98.149;Req. Allow & Adv. Prefix;#20250000267;;Open;;;;GMT+7;Luthfi;;;;Email;Email;No;;;;;;
+73;OWS;Moratel;156.230.0.0/16 AS984;2957012100081987;Req. Allow & Adv. Prefix;#20250000268;;Open;;;;GMT+7;Luthfi;;;;Email;Email;No;;;;;;
+74;OWS;Smartfren;156.230.0.0/16 AS984;Peer IP 66.96.246.146/30;Req. Allow & Adv. Prefix;#20250000269;;Open;;;;GMT+7;Luthfi;;;;Email;Email;No;;;;;;
+75;OWS;Biznet;156.230.0.0/16 AS984;Peer IP 182.253.255.197;Req. Allow & Adv. Prefix;#20250000270;;Open;;;;GMT+7;Luthfi;;;;Email;Email;No;;;;;;
+76;OWS;XL;156.230.0.0/16 AS984;Peer IP 112.215.117.242;Req. Allow & Adv. Prefix;#20250000271;;Open;;;;GMT+7;Luthfi;;;;Email;Email;No;;;;;;
+77;ABH;CAC-SBY;;;Req. Allow & Adv. Prefix;#20250000272;;Closed;;;;;Tian;Detect AS private behind Telkom AS7713;Adjust by Telkom;#20250000272 | ABH (CAC_SBY) | Req Check Prefix | Komplain ke Telkom kenapa Prefix 110.138.220.0/22 dan beberapa prefix lainnya diadvertised under AS Private | FU Hasil dari TELKOM | Hasil nya sudah tidak ada As private dibelakang AS7713 | CLOSED;Email;Email;No;BGP Flap;;;;;
+78;Aofei;ABH-MDC;Rack B05;;Power Issue;#20250000273;;Open;13/03/2025 10:23;13/03/2025 11:42;01:19:00;GMT+7;Haikal;;;;;;;;;;;;
+79;DCC;ABH-MDC;Rack A14;;Power Issue;#20250000274;;Closed;13/03/2025 10:23;13/03/2025 11:42;01:19:00;GMT+7;Haikal;"The UPS failure caused a loss of output power, resulting in no 
+input power to DCC equipment. Since the issue is with the UPS 
+inverter, the bypass power is also not functioning";"1. Move the power source of PDU-A to the MDC-UPS 
+2. Move the power source of PDU-B to a nearby rack";#20250000274 | DCC (ABH-MDC) | Power Issue | Rack A14 | DCC report bahwa adanya masalah pada Rack A14 | Dari hasil temuan bahwa ditemukannya UPS pada Rack A14 mengalami gangguan dengan log P.13 yang di indikasikan dengan issue inverter | Pada solusi sementara ABH sudah melakukan install Terminal power yang baru untuk tetap menjaga service running | sudah di eskali kan ke provider PDU nya yang bisa memakan waktu 4-6 minggu | CLOSED;Email;WhatsApp;yes;;;;;;
+80;Seabank;ABH;AB21015 ;;Pro-active traffic drop;#20250000275;;Open;;;;GMT+7;Tian;;;;Email;Email;No;;;;;;
+81;ABH;AOFEI;Network Freeze;Network Freeze;Network Freeze;to April 8th, 2025.;;Open;26/03/2025;08/04/2025;;GMT+7;Tian;;;;;;;;;;;;
+82;Seabank;ABH;22022-A and 22022-B;;Req. Allow & Adv. Prefix;#20250000277;;Closed;;;;;Tian;;;#20250000277 | SEA (XL) | 22022-A and 22022-B VLAN632 & VLAN641 | SEA req advertised prefix under AS24203 (XL-Axiata) minta diadvertised ke vlan638 & vlan641 | Monitor | CLOSED;Email;Email;No;;;;;;
+83;ABH;MDC;Req Tarikan;;Req Tarikan Kabel;#20250000278;;Closed;;;;;;;;;Email;Email;No;;;;;;
+84;Donlim;ABH-CGS;202500054;EDMKABH202503048P;Link Down;#20250000279;;Closed;13/03/2025 12:35;13/03/2025 12:35;00:00:00;GMT+7;Haikal;Link down caused by power outage at POP;Backup UPS and autorecover when the power comes back on;3. #20250000279 | Donlim (ABH-CGS) | Link Down | 202500054 | Donlim report link down pada 13/03/2025 12:35 GMT+7 | Update dari tim CGS bahwa adanya gangguan pada POP | FU pengecekan CGS | Sudah dijelaskan root cause dan actionnya | Monit terlebih dahulu 24 Hours | Kirimkan official RFO di office hours | Prepared dan Konfirm internal | CLOSED;WeChat;WhatsApp;yes;;;;;;
+85;ABH;CBN;Peer v6 2407:14c0:103::9;;BGP Flap;#20250000280;;Open;;;;GMT+7;Tian;;;;Email;Email;No;;;;;;
+86;DCC;ABH;202400086;;Maintenance;#20250000281;;Open;17/03/2025 11:00;17/03/2025 15:00;;GMT+7;Tian;Plan maintenance replace PDU R36;Plan maintenance replace PDU R36;Plan maintenance replace PDU R36;Email;Email;No;;;;;;
+87;3GO;ABH;AB23040;;Maintenance;#20250000282;;Open;17/03/2025 11:00;17/03/2025 15:00;;GMT+7;Tian;Plan maintenance replace PDU R37;Plan maintenance replace PDU R37;Plan maintenance replace PDU R37;Email;Email;No;;;;;;
+88;Wangsu-Neu;ABH;202400108;;Maintenance;#20250000283;;Open;17/03/2025 11:00;17/03/2025 15:00;;GMT+7;Tian;Plan maintenance replace PDU R38;Plan maintenance replace PDU R38;Plan maintenance replace PDU R38;Email;Email;No;;;;;;
+89;DCC;ABH-ISPL;202400083; 241101-100G-IPLC-Matrix EQXSG1-EDGE-TMBS;Maintenance;#20250000284;#2025-0030123;Open;22/03/2025 23:00;23/03/2025 5:00;;GMT+7;Tian;urgent maintenance activity;urgent maintenance activity;urgent maintenance activity;Email;Email;No;;;;;;
+90;ABH;ISPL;; 241101-100G-IPLC-Matrix EQXSG1-EDGE-TMBS;Maintenance;#20250000285;#2025-0030123;Open;22/03/2025 23:00;23/03/2025 5:00;;GMT+7;Tian;urgent maintenance activity;urgent maintenance activity;urgent maintenance activity;Email;Email;No;;;;;;
+91;DCC;ABH;Permit access MDC,Neu, EDG, NTT, PDG & Inbound at Neu;Permit access MDC,Neu, EDG, NTT, PDG;Request Permit Access;#20250000286;RHS Ticket #202500036;Open;17/03/2025 0:00;31/03/2025 23:59;14,99930556;GMT+7;Tian;PDG and NTT not done;;;Email;Email;No;;;;;;
+92;DCC;ABH-ISPL;202400083; 241101-100G-IPLC-Matrix EQXSG1-EDGE-TMBS;Network Freeze;#20250000287;#2025-0030124;Closed;27/03/2025 0:00;11/04/2025 23:59;23:59:00;GMT+7;Luthfi; Indosat Singapore Pte Ltd. In observance of the upcoming Eid Al-Fitr holidays, we would like to inform you that we will be entering a Network Freeze period on the following dates: March 27, 2025 - April 11, 2025; Indosat Singapore Pte Ltd. In observance of the upcoming Eid Al-Fitr holidays, we would like to inform you that we will be entering a Network Freeze period on the following dates: March 27, 2025 - April 11, 2025;March 27, 2025 - April 11, 2025;Email;Email;No;;;;;;
+93;OWS;ABH-ISPL;;VLAN767 & 768;Destiantion Unreachable;#20250000288;;Closed;15/03/2025 10:00;;;GMT+7;Haikal;;;#20250000288 | OWS (ABH-ISPL) | Destiantion Unreachable | VLAN767 & 768 | OWS report bahwa ada kendala akses ke beberapa IP | Dari hasil pengecekan ke arah traffic memang adanya drop traffic | Hasil dari pembahasan dari ISPL bahwa route nya best via EIE direct bukan via VLAN767 | Concern OWS saat ini adalah IP yang under AS138077 | Hasil dari pengecekan di sisi ISPL bahwa IP under AS138077 dapat di ping dan di MTR, namun banyak dari global tidak bisa reach ke IP tersebut | Berdasarkan hasik cek RADB dari ISPL bahwa salah satu dari IP bermasalah masih menggunakan 2 Origin AS (133812 & 138077) | Asumsi asymetric route untuk prefix yang 45.198.0.0/16 | OWS minta unadvertised prefix mereka dari ISPL dan meminta advertised ke uptream lain | Sudah diadvertised ke DCC841 & 844 dan sedang req allow prefix berikut no ticketnya #20250000289 bantu FU ke DCC | Setelah GRE OWS dilepas Prefix tidak bisa reach ke destination dan mentok pada hop DCC-EIE | OWS minta AS151326/DCC untuk unadvertised ke AS131219 | Koordinasi Internal | RFO sudah diprovide ke Cust | Closed;;;;;;;;;
+94;OWS;DCC;"Req Allow Prefix to vlan841 & 844
+Under 138077
+103.242.76.0/24
+110.44.170.0/24
+110.44.172.0/22
+202.56.172.0/24
+203.84.137.0/24
+203.84.138.0/24
+103.52.2.0/24
+157.66.188.0/24
+103.52.3.0/24
+103.87.70.0/24
+103.87.71.0/24
+103.160.54.0/23
+
+Under 984
+45.198.0.0/16
+156.230.0.0/16
+";;Req. Allow & Adv. Prefix;#20250000289;DCC2503151940;Open;15/03/2025 15:49;;;GMT+7;Tian;;;;Email;Email;No;;;;;;
+95;Aofei-Indigo;ABH;241102-10G-IPLC;241102-10G-IPLC INDIGO- EQXSG1-EDGE-ISPL;Flap & Down;#20250000290;#2025-0030131;Open;15/03/2025 23:32:28;15/03/2025 23:45:02;00:12:34;GMT+7;Luthfi;There was no physical activity on the ABH side or by the Indigo provider. However, there were indications of tidying-up activities by the DC team at APJII Cyber1, which caused the cables to be disturbed, leading to flapping.;Auto-recovered;#20250000290 | Aofei-INDG (ABH-ISPL) | Flap & Down | 241102-10G-IPLC | Aofei report bahwa service Indigonya mengalami multiple flapping dan meminta untuk di check | Dari hasil pengecekan bahwa port Fisiknya mengalami flapping dan detect log multiple flapping periode 15/03/2025 23:32:28 - 23:45:02 GMT+7 | Sudah di open ticket ke ISPL | Update dari ISPL bahwa port fisik di edge sempat flapping namun tidak ada activity dan tidak ada issue pada backbone EQX<>EDGE | Hasil compare juga tidak ada perubahan pada TX dan RX | Konfirm ke internal untuk disampaikan ke Aofei bahwa tidak detect issue | CLOSED;Email;Email;yes;;;;;;
+96;CTG-Ali;ABH;202300003;;Link Down;#20250000291;;Closed;;;;GMT+7;Syahrul;;;;;;;;;;;;
+97;Baishan;IIX;202400096;"G3-RR2/060524
+IIX-EDGENEXT";Link Down;#20250000292;;Closed;16/03/2025 1:30:35;;;GMT+7;Tian;Link down proactive;Cleaning fiber optic;5. #20250000292 | Baishan (IIX) | G3-RR2/060524 IIX-EDGENEXT | Link Down | Dari NMS IIX traffic Baishan drop dan BGP active sejak 16/03/2025 01:30:35 GMT+7 | Proactive ke baishan namun dari baishan infonya tidak ada adjustment | FU ke tim APJII dan mereka menemukan power RX degrade dari perangkat IIX | FU updatenya ke NOC Apjii | Update dari APJII bahwa menyarankan untuk mengganti XC dan tidak perlu ada jumperan lagi | Akan di check oleh FE ke lapangan | Setelah di tshoot oleh tim FE BGP Baishan<>IIX kembali normal dan traffic kembali running | Sudah di konfirmasi ke Baishan | Confirm Close Ticket;WeChat;WhatsApp;;;;;;;
+98;3GO;ABH;Req Inbound;Req Inbound;Request Permit Access;#20250000293;;Open;17/03/2025 19:00;;;GMT+7;Tian;;;;Email;Email;No;;;;;;
+99;DCC;ABH;"RHS Request to dismantle FS at EDGE and bring back to Pejaten
+Date: 18-Mar-25
+Rack: EG1-RCK-3-043-001
+U number: 38U
+PN: FS DCP920-D08P
+SN: 1508P240104B";"RHS Request to dismantle FS at EDGE and bring back to Pejaten
+Date: 18-Mar-25
+Rack: EG1-RCK-3-043-001
+U number: 38U
+PN: FS DCP920-D08P
+SN: 1508P240104B";Req RHS;#20250000294;RHS Ticket #202500037;Open;17/03/2025 :00:00;;;GMT+7;Tian;;;;Email;Email;No;;;;;;
+100;Infobip;ABH - DCC; AB23039;VLAN3507;Traffic Drop;#20250000295;TT-2025084221;Closed;17/03/2025 23:00:00;;;GMT+7;Luthfi;Congestion;Auto-recovered;3. Pro-Active | #20250000295 | Infobip (ABH-DCC) | AB23039 (SDPP202308040002) | Dari monitoring terlihat traffic Infobil terlihat down periode 17/03/2025 23:00 GMT+7 | Setelah di check bahwa port tidak ada kendala dan MAC-Address detect dari kedua sisi | Sudah di compare dengan sisi DCC bahwa tidak ada gangguan di submarine DCI<>FR5 dan MAC-Address juga detect | Konfirmasi ke Infobip apakah ada issue atau Adjustment | FU Konfirmasi | Setelah dikonfirmasi infobip memberikan informasi bahwa sebelumnya mengalami kenaikan packet loss | Sudah di mintakan ke DCC untuk melakukan test ping segment hingga besok pagi untuk make sure issue | FU DCC untuk migrate path nya ke yang lebih stable | Saat ini Infobip sudah mengembalikan traffic periode 19/03/2025 22:30 GMT+7 | Keep monit dan FU ke DCC untuk result test ping hingga besok pagi | Kirimkan ke Infobip | Sudah di berikan ke Infobip dan hasilnya normal | Monitoring terlebih dahulu | Dari monitoring terlihat bahwa utilisasi Infobip selalu fuul dan mengalami congest | Sudah disampaikan ke Infobip bahwa itu alasan mengalami packet loss | Confirm untuk close ticket | Infobip confirm untuk close ticket | CLOSED;Email;Email;No;;;;;;
+101;Seabank;ABH;AB21015 ;;Traffic Drop;#20250000296;;Closed;17/03/2025 18:00;18/03/2025 14:00;;GMT+7;Syahrul;;;Pro-active #20250000296 | Seabank ( ABH ) | AB21015 | Seabank line 2 terpantau drain traffic sejak malam 17/03/2025 | Hasil pengecekan noc disisi ABH tidak terdapat kendala konfirmasi dari sea juga tidak ada adjustment | Monitor terlebih dahulu | CLOSED;;;;;;;;;
+102;CTID-YUTO;FIBERNET;202400153;IN18B056;Intermittent;#20250000297;;Closed;18/03/2025 8:53;18/03/2025 14:13;05:20:00;GMT+7;Syahrul;Intermittent dikarenakan ganguan frekuensi radio;Tunning frekuensi radio;"4. #20250000297 | CTID-Yuto (Fibernet) | 202400153 | Intermittent | Cust report mengalami intermittent pada 08:53 | Fu pengecekan fibernet | informasi dari fibernet saat ini masih melakukan tunning frekuensi radio | Fu hasil optimasi | Optimasi sudah berhasil dilakukan | Monitor | FU RFO | RFO Available | Create RFO ABH | RFO ABH Available | CLOSED
+";;;;;;;;;
+103;;;;;;#20240003927;;Closed;;;;;Haikal;;;#20240003927 | ABH (SF) | Req creacte IPV6 | masih koordinasi di internal SF terkait request ini | SF Menanayakan IP PTP dari ABH atau dari SF | ABH Meminta PTP Dari Smartfren | konfirmasi dari SF belum bisa provide PTPv6 | cari alokasi PTPv6 dgn SF | PTP Available dan sedang cek ke device sekaligus minta konfirmasi dari SF | Informasi SF akan dikirimkan PTP IPv6nya | masih menunggu alokasi IPv6 dari tim planning SF | SF sudah alokasi IP nya | sudah di config di sisi ABH dan belum reply | BGP Sudah Establish | CLOSED;;;;;;;;;
+104;Wangsu;DCC;202400109;ABH202406110001;Flapping;#20250000299;TT-2025092011 ;Closed;2025-03-18 15:36;21/03/2025 7:54:00;;GMT+8;Haikal;the BFD flapping is due to the switchover from the primary link to the backup link due to interference on the primary link and currently the primary link is normal and the circuit is back running on the primary link;the BFD flapping is due to the switchover from the primary link to the backup link due to interference on the primary link and currently the primary link is normal and the circuit is back running on the primary link;" #20250000299 | Wangsu (DCC) | Flapping | 202400109 | Wangsu report flapping pada 2025-03-18 15:36 GMT+8 dan sudah stable | Update dari DCC bahwa tidak ditemukannya anomali dan flapping | Sudah di sampaikan ke Wangsu | Update dari Wangsu bahwa flapping masih on going | Sudah di mintakan ke DCC untuk mengecek log pada periode yang di mentioned | FU DCC untuk migrate path nya ke yang lebih stable | Update dari DCC bahwa service running di optimal path dan no adjustmen | Wangsu confirm sudah normal | Under monitoring terlebih dahulu | Minta RFO dan prefentive ke DCC | RFO sudah ada namun masih FU untuk preventif nya, DCC butuh info flap nya berapa ms dan parameter BFD yang di set di sisi Wangsu , sudah di info sekitar 12ms | Tanya Wangsu dan FU DCC | Sudah diinfokan parameter BFD yang diset oleh wangsu ke DCC | FU updatenya ke DCC
+";WeChat;Email;yes;;;;;;
+105;Baoshuo;Crossnet;;BTTIG_FO vlan535;Link Down;#20250000300;;Closed;;;;GMT+7;Luthfi;FO Cut di segment bungku - topogaro;Penarikan spare cable;6. #20250000300 | Baoshuo (Crossnet) | Link Down | BTTIG_FO vlan535 | Terpantau bahwa BTTIG_FO mengalami down periode 03:20 GMT+7 dan infonya adanya FO cut link segmen  bungku-topogaro, saat ini sedang proses menuju  TS matano untuk OTDR | Keep eye progressnya | RFO Available | Create RFO ABH | RFO ABH Available | CLOSED;WhatsApp;WhatsApp;yes;BGP Flap;;;;;
+106;ABH;MDC;Req Permit Access;;Request Permit Access;#20250000301;;Open;;;;;Haikal;;;;;;;;;;;;
+107;ABH;DCC;"Please help to raise a RHS ticket to Install SmartOptic at MDC B07 and Power Up and Patching Artamedia XC into LINE Port 
+
+Details as below:
+Date: 21-Mar-25
+Time: 10AM - 1PM
+Rack: B07
+U number: Assigned U
+Tools: Bring 4 pcs euro power cable, 2 pcs L shape rail kit, SmartOptic sliding tray, tools, bolt and nut, 
+";"Please help to raise a RHS ticket to Install SmartOptic at MDC B07 and Power Up and Patching Artamedia XC into LINE Port 
+
+Details as below:
+Date: 21-Mar-25
+Time: 10AM - 1PM
+Rack: B07
+U number: Assigned U
+Tools: Bring 4 pcs euro power cable, 2 pcs L shape rail kit, SmartOptic sliding tray, tools, bolt and nut, 
+";Req Ticket RHS;#20250000302;#202500039;Closed;21/03/2025 10:00;21/03/2025 13:00;03:00:00;GMT+7;Tian;;;;Email;Email;;;;;;;
+108;DCC;ABH;"Please help to raise a RHS ticket to Install Huawei NE8000-M14 at EDGE Rack 43 
+
+Details as below:
+Date: 21-Mar-25
+Time: 10AM - 1 PM
+Rack: Rack 43
+U number: Assigned U
+Tools: 2 pcs L shape rail kit, tools, bolt and nut, 
+Also escort me into Edge as i will assist in installation and configuration
+
+Device details for move in:
+Model: Huawei NE8000-M14
+SN: 2102355NQB10R2100001
+";"Please help to raise a RHS ticket to Install Huawei NE8000-M14 at EDGE Rack 43 
+
+Details as below:
+Date: 21-Mar-25
+Time: 10AM - 1 PM
+Rack: Rack 43
+U number: Assigned U
+Tools: 2 pcs L shape rail kit, tools, bolt and nut, 
+Also escort me into Edge as i will assist in installation and configuration
+
+Device details for move in:
+Model: Huawei NE8000-M14
+SN: 2102355NQB10R2100001
+";Req Ticket RHS;#20250000303;#202500040;Closed;21/03/2025 10:00;21/03/2025 13:00;03:00:00;GMT+7;Tian;;;;Email;Email;;;;;;;
+109;ABH;BIX;;;Link Down;#20250000304;;Open;21/03/2025 21:25:00;;;GMT+7;Haikal;;;#20250000304 | ABH (BIX) | Link Down | Peer 218.100.41.190/24 | Terlihat dalam monitoring port facing BIX mengalami down pada 21/03/2025 21:25:00 | FU pengecekan BIX | sudah up kembali namun belum ada respon dari BIX;Email;Email;;;;;;;
+110;DCC;ABH;;;Stop Advertised;#20250000305;;Open;;;;GMT+7;Tian;;;;;;;;;;;;
+111;DCC;ABH;"RHS Request to assist pulling 4 XC at NTT JKT3
+Date: 22-Mar-25
+Time: 10AM - 5PM";"RHS Request to assist pulling 4 XC at NTT JKT3
+Date: 22-Mar-25
+Time: 10AM - 5PM";Req Ticket RHS;#20250000306;RHS ticket#202500041;Open;22/03/2025 10:00;22/03/2025 17:00;07:00:00;GMT+7;Tian;;;;;;;;;;;;
+112;DCC;ABH-HSP;L1 NEU-CYB | No Service Order;;Flap & Down;#20250000307;;Open;22/03/2025 11:06:31;22/03/2025 11:06:36;;GMT+7;Haikal;;;;Email;Email;yes;;;;;;
+113;CBC;ABH;202400143;;Cant Access Website;#20250000308;;Closed;25/03/2025 0:06:31;;;;Haikal;"Can’t open some website due to any some 
+misconfiguration from customer side, and 
+Can’t access the server remotely due to need 
+hard reboot from Customer side. ";"1. Website was working normally after adding 
+TCP MSS value toward the server with 
+Customer 
+2. Server has been running and working properly 
+after hard reboot from Customer ";#20250000308 | CBC (ABH) | Cant Access Website | 202400143 | CBC report bahwa mereka tidak bisa akses ke website bizchannel.cimbniaga.co.id (45.60.112.24) vpn.klikbca.com (202.6.211.46) | dalam pengecekan bahwa website vpn.klikbca.com tidak bisa di ping dari ABH network dan suspect bahwa adanya ICMP blocking | test menggunakan source IP 103.130.198.0/24 dan hasilnya accessible namun tidak bisa di ping | Hasil pengetesa dengan source IP 103.130.199.0/24 semua b isa di akses | CBC report bahwa mereka tidak menerima hello packet dari server mereka yang di Nex | Saat ini masih dalam investigasi | Dari hasil pengecekan kemarin setelah onsite Website berhasil di access setelah di rebooted server dan saat ini FE akan onsite kembali untuk melakukan capture Wireshark | Keep eye | Minta root cause dan balikan traffic | Kirimkan Closure ke CBC | CLOSED;;;;;;;;;
+114;Aofei;ABH-MDC;Permit Access;Permit Access;Request Permit Access;#20250000309;;Open;24/03/2025 0:00:00;31/03/2025 23:59:00;;GMT+7;Tian;Req permit access;Req permit access;Req permit access;Email;Email;;;;;;;
+115;CTG-ALIBABA-IIX;ABH-IIX;202300003;;Link Down;#20250000310;2503250077117100;Closed;25/03/2025 0:05:00;25/03/2025 21:51:52;21:46:52;GMT+7;Tian; IIX missed the notification regarding the relocation of IIX switches earlier;"install new cabling to the IIX rack and set up a new cross-connect (XC) cable between the IIX and ABH devices.
+Once the new XC cable is in place, the BGP connection has been successfully re-established";#20250000310 | CTG-ALI (IIX) | 202300003 | Miss notifikasi maintenance relokasi switch IIX dari RG3 ke RD3 dari IIX karena tidak dicc ke email noc | IIX minta untuk isi form dan drop kabel ( panjang -+20/25m) | Form interkoneksiny sudah diisi dan sudah dikirimkan ke email IIX | Persiapan untuk drop kabel | #APJII-0002-0432 | XC baru sudah di patching | Dari sisi IIX suspect belum di plug | FU pengecekan NOC IIX | Sudah up kembali monitor selama 24 jam for stabilty | CLOSED;Email;Email;;;;;;;
+116;Baishan-IIX;ABH-IIX;202400096;"G3-RR2/060524
+IIX-EDGENEXT";Link Down;#20250000311;;Closed;25/03/2025 0:05:00;25/03/2025 21:51:52;21:46:52;GMT+7;Tian; IIX missed the notification regarding the relocation of IIX switches earlier;"install new cabling to the IIX rack and set up a new cross-connect (XC) cable between the IIX and ABH devices.
+Once the new XC cable is in place, the BGP connection has been successfully re-established";#20250000311 | Baishan (IIX) | 202400096 | Miss notifikasi maintenance relokasi switch IIX dari RG3 ke RD3 dari IIX karena tidak dicc ke email noc | IIX minta untuk isi form dan drop kabel ( panjang -+20/25m) | Form interkoneksinya sudah diisi dan sudah dikirimkan ke email IIX | Persiapan untuk drop kabel | #APJII-0002-0432 | XC baru sudah di patching | Dari sisi IIX suspect belum di plug | FU pengecekan NOC IIX | Sudah up kembali monitor selama 24 jam for stabilty | CLOSED;Email;Email;No;;;;;;
+117;3GO-IIX;ABH-IIX;202400097;RG3-RR2/240424;Link Down;#20250000312;;Closed;25/03/2025 0:05:00;25/03/2025 21:51:52;21:46:52;GMT+7;Tian; IIX missed the notification regarding the relocation of IIX switches earlier;"install new cabling to the IIX rack and set up a new cross-connect (XC) cable between the IIX and ABH devices.
+Once the new XC cable is in place, the BGP connection has been successfully re-established";#20250000312 | 3GO (IIX) | 202400097 | Miss notifikasi maintenance relokasi switch IIX dari RG3 ke RD3 dari IIX karena tidak dicc ke email noc | IIX minta untuk isi form dan drop kabel ( panjang -+20/25m) | Form interkoneksinya sudah diisi dan sudah dikirimkan ke email IIX | Persiapan untuk drop kabel | #APJII-0002-0432 | XC baru sudah di patching | Dari sisi IIX suspect belum di plug | FU pengecekan NOC IIX  | Sudah up kembali monitor selama 24 jam for stabilty | CLOSED;WhatsApp;WhatsApp;No;;;;;;
+118;NTTG-CAMPINA;ICON+;202400152;;Link Down;#20250000313;;Closed;25/03/2025 15:02;;;GMT+7;Syahrul;Link Down;No adjustment in PLN ICON;8. #20250000313 | NTTG-Campina (ICON+) | 202400152 | Link Down | Hasil monitoring terpantau campina down | pengecekan disisi ICON tidak dapat ping ip perangkat suspect perangkat mati/issue power | Setelah mikrotik up kembali hasil pengecekan perangkat tidak mati melainkan vpn yang mati | FU pengecekan network icon pada waktu yang dimention | masih dalam pengecekan tim ICON | Hasil pengecekan ICON tidak ada log issue | Monitoring 24 jam lalu close ticket jika tidak ada feedback lebih lanjut;;;;;;;;;
+119;MDC;ABH;Permit Access;Permit Access;Request Permit Access;#20250000314;;Open;24/03/2025 0:00:00;31/03/2025 23:59:00;;GMT+7;Syahrul;Req permit access;Req permit access;Req permit access;Email;Email;No;;;;;;
+120;CTG-ALIBABA-IIX;ABH-IIX;;202300003;Flapping;#20250000315;;Closed;;;;GMT+7;Luthfi;mac flapping;auto recovered;"5. #20250000315 | CTG-ALI (ABH-IIX) | Flapping | 202300003 | CTG report mengalami flapping dan jitter periode 2025-03-26 11:06:57 GMT+7 | Sudah di open ticket | Berikan hasil pengecekan ke CTG-ALI | Termonitor traffic sudah kembali monitor selama 24 jam for stabilty
+";Email;Email;yes;;;;;;
+121;ABH;MDC;Permit Access;Permit Access;Request Permit Access;#20250000316;;Open;26/03/2025 0:00:00;31/03/2025 23:59:00;;GMT+7;Syahrul;;;;;;;;;;;;
+122;ABH;HSP;Link Neu <> Cyber;     I-0122-008-01;Flapping;#20250000317;;Open;27/03/2025 0:56;27/03/2025 0:59;;GMT+7;Haikal;;;;Email;Email;yes;;;;;;
+123;ABH;HSP;Link Neu <> IDC;I-0122-009-01;Flapping;#20250000318;;Closed;27/03/2025 0:55;27/03/2025 0:55;;GMT+7;Haikal;Impact perapihan di closure;Checking closure;CLOSED;Email;Email;yes;;;;;;
+op;ABH;MDC;;PSU;Request Permit Access;#20250000319;;Closed;;;;GMT+7;Haikal;;;;;;;;;;;;
+125;DCC;ABH;;;Request;#20250000320;;Open;;;;GMT+7;Luthfi;;;;;;;;;;;;
+126;CTG-Ali;ABH;202300003;;Traffic Drop;#20250000321;;Closed;27/03/2025 22:00;28/03/2025 6:40;;GMT+7;Haikal;Mac Flapping from IIX side;Shut down peer ;CLOSED;Email;Email;yes;;;;;;
+127;ABH;Powertel;;320100017 | NEU<>CYBER;Link Down;#20250000322;V8R-UZ9-S9WY;Closed;30/03/2025 3:27:14;30/03/2025 12:30;09:02:46;GMT+7;Haikal;Fo Cut Km 12.2 dari cyber imbas vandalisme;Jumper 100m & Resplicing core;#20250000322 | ABH (Powertel) | Link Down | 320100017 | NEU<>CYBER | Dalam monitoring terlihat link Neu <> Cyb via Powertel mengalami down pada 30/03/2025 3:27:14 WIB | FU pengecekan pwtl | indikasi FO cut km 12.2 dari cyber | link termitor up pada jam 12:30 WIB | monitoring dan FU RFO | RFO received | CLOSED;Email;Email;yes;;;;;;
+128;CTG-Ali;ABH;202300003;;Link Down;#20250000323;;Closed;2025-03-30 15:41:49;2025-03-30 17:50:49;02:09:00;GMT+7;Fatoni;Port DCI shutdown by CTG;No action from abhinawa team;Pro active | #20250000323 | Alibaba IIX (ABH - IIX) |  202300003 | Terlihat link alibaba iix down, setelah di cek mac address IIX tembus sampai DCI | port di DCI down suspect di shutdown oleh Ali | tidak ada reset pada VPLS dan normal di sisi ABH | confirm ke alibaba | no confirm, sudah stabil | CLOSED;Email;Email;yes;;;;;;
+129;ABH;BIX;;;Link Down;#20250000324;;Closed;31/03/2025 9:20;;;GMT+7;Tian;;;5. #20250000324 | ABH (BIX) | Link Down | BGP down pada pukul 09.20 WIB | dari pengecekan port facing BIX tidak receive power | Sudah up kembali pada 2025-03-31T16:23:00+00:00 | FU root cause dari BIX ;Email;Email;;;;;;;
+129;Huawei;ABH;202500080;;Packet Loss;#20250000325;;Closed;31/03/2025 8:30;;;GMT+7;Tian;;;3. #20250000325 | Huawei (ABH) | Paket loss |  dari pengecekan by traceroute dari 101.1.4.41 menuju 164.52.94.17 normal tidak ada paket loss (tidak via Abhinawa) | tracertback dari 164.52.94.2 menuju 101.1.4.48 terdapat loss pada hop 8 10.174.0.245 suspect Asymetric route | dari pengecekan kami dengan test compare ke arah ip tujuan normal pada hop 8 10.174.0.245 | Setelah di cek route sudah symetric dan pengecekan masih tampa packet loss | Confirm DCC apakah masih detect loss | hasil pengecetasan pelanggan infonya tidak menemukan masalah pada segment DCC dan ABH, issue PL ada diantara customer ke zenlayer EIE | Monitoring | CLOSED;WeChat;WhatsApp;;;;;;;

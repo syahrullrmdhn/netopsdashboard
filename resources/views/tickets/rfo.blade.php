@@ -5,7 +5,7 @@
     <div>
       <div class="flex items-center gap-3">
         {{-- Logo yang sudah diubah --}}
-        <img src="{{ asset('images/android-chrome-512x512.png') }}" alt="Company Logo" class="h-12 w-12 object-contain">
+        <img src="{{ asset('images/android-chrome-192x192.png') }}" alt="Company Logo" class="h-12 w-12 object-contain">
         <div>
           <h2 class="text-xl font-bold text-gray-900">PT. Abhinawa Sumberdaya Asia</h2>
           <p class="text-sm text-gray-500">Div. Network Operations Center</p>
@@ -13,14 +13,14 @@
       </div>
     </div>
     <div class="text-right">
-      <div class="text-sm font-medium text-gray-700">RFO Report</div>
+      <div class="text-sm font-medium text-gray-700">IR Created</div>
       <div class="text-xs text-gray-500">{{ now()->format('d F Y H:i') }}</div>
     </div>
   </div>
 
   {{-- Report Title --}}
   <div class="text-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Reason For Outage (RFO) Report</h1>
+    <h1 class="text-2xl font-bold text-gray-800">Post Incident Report</h1>
     <div class="mt-2 text-sm text-gray-500">
       Incident Ticket {{ $ticket->ticket_number }}
     </div>
@@ -31,10 +31,13 @@
     <h2 class="text-lg font-semibold text-gray-700 mb-3">Incident Information</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
+        <dt class="text-sm font-medium text-gray-500">Open Date</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ $ticket->open_date}}</dd>
+      </div>
+      <div>
         <dt class="text-sm font-medium text-gray-500">Customer</dt>
         <dd class="mt-1 text-sm text-gray-900">{{ $ticket->customer->customer }} ({{ $ticket->customer->cid_abh }})</dd>
       </div>
-
       <div>
         <dt class="text-sm font-medium text-gray-500">ABH Ticket</dt>
         <dd class="mt-1 text-sm font-mono text-gray-900">{{ $ticket->ticket_number }}</dd>
@@ -42,6 +45,24 @@
       <div>
         <dt class="text-sm font-medium text-gray-500">Type of Issue</dt>
         <dd class="mt-1 text-sm text-gray-900">{{ $ticket->issue_type }}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Start Time</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ $ticket->start_time}}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">End Time</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ $ticket->end_time}}</dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">MTTR</dt>
+        <dd class="mt-1 text-sm text-gray-900">
+          @if($ticket->end_time && $ticket->open_date)
+              {{$ticket->end_time->format('d/m/Y H:i') }} - {{$ticket->open_date->format('d/m/Y H:i') }}
+              ({{ $ticket->end_time->diffInMinutes($ticket->open_date)}} minutes)
+          @else
+          Ongoing
+          @endif
       </div>
       <div>
         <dt class="text-sm font-medium text-gray-500">Duration</dt>
