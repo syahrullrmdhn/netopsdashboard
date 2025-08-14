@@ -125,6 +125,7 @@
         @endcan
 
 
+
         @can('roles.index')
             <x-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles*')"
                         class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">

@@ -38,4 +38,12 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect'      => env('GOOGLE_REDIRECT_URI'),
     ],
+    'summarizer' => ['url' => env('SUMMARIZER_URL', 'http://127.0.0.1:3001')],
+
+    'observium' => [
+        'base'       => env('OBSERVIUM_BASE', 'http://103.130.199.26'),
+        'username'   => env('OBSERVIUM_USER', ''),
+        'password'   => env('OBSERVIUM_PASS', ''),
+        'verify_ssl' => (bool) env('OBSERVIUM_VERIFY_SSL', false),
+    ],
 ];

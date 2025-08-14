@@ -16,6 +16,9 @@
   href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap"
   rel="stylesheet"
 />
+<style>[x-cloak]{display:none!important}</style>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 <style>
   @layer utilities {
     .font-poppins { font-family: 'Poppins', sans-serif; }

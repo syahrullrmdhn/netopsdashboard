@@ -24,6 +24,8 @@ use App\Http\Controllers\EscalationController;
 use App\Http\Controllers\NocController;
 use App\Http\Controllers\CactiGraphController;
 use App\Http\Controllers\WhatsappBotController;
+use App\Http\Controllers\NmsController;
+use App\Http\Controllers\MonitoringController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +87,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/performance/eval',          [PerformanceController::class,'evalDashboard'])->name('performance.eval');
     Route::get('/performance/detail/{type}', [PerformanceController::class,'detail'])->name('performance.detail');
 
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+
+    // JSON endpoints dipanggil dari front-end
+    Route::get('/monitoring/devices.json',     [MonitoringController::class, 'devicesJson']);
+    Route::get('/monitoring/interfaces.json',  [MonitoringController::class, 'interfacesJson']);
+    Route::get('/monitoring/graph.png',        [MonitoringController::class, 'graphPng']);
+});
+
     /* User & Role Management */
     Route::middleware('can:manage users')->group(function () {
         Route::post('users/{user}/reset-password', [UserController::class,'resetPassword'])->name('users.resetPassword');
@@ -134,9 +144,6 @@ Route::middleware('auth')->group(function () {
     Route::get('whatsapp-bot',            [WhatsappBotController::class,'index'])->name('whatsapp.bot');
     Route::get('whatsapp-bot/session',    [WhatsappBotController::class,'session']);
     Route::post('whatsapp-bot/send',      [WhatsappBotController::class,'send']);
-    Route::get('/monitoring', [App\Http\Controllers\MonitoringController::class, 'index'])
-    ->name('monitoring.index')
-    ->middleware(['auth']); // atau permission lain jika perlu
 
 
-});
+

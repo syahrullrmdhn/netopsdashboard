@@ -482,5 +482,11 @@ class TicketController extends Controller
     }
 }
 
+public function rfoPdfByNumber($ticket_number)
+{
+    $ticket = Ticket::where('ticket_number', $ticket_number)->firstOrFail();
+
+    return $this->rfoPdf($ticket->id);
+}
 
 }

@@ -12,27 +12,86 @@
 @endphp
 
 <div
-    x-data="{
-        showRfo: false,
-        editRfo: false,
-        showEsc: false,
-        showClose: false,
-        showChronoEdit: false,
-        escalateLevel: {{ $escalationLevels->first()->level ?? 0 }},
-        rfo: {
-            problem_detail: @js($ticket->problem_detail),
-            action_taken:   @js($ticket->action_taken),
-            preventive_action: @js($ticket->preventive_action)
-        },
-        openRfo() { this.showRfo = true; this.editRfo = false; },
-        closeRfo() { this.showRfo = false; },
-        toggleEditRfo() { this.editRfo = !this.editRfo; },
-        openEsc() { this.showEsc = true; },
-        closeEsc() { this.showEsc = false; },
-        openClose() { this.showClose = true; },
-        closeClose() { this.showClose = false; }
-    }"
-    class="py-8"
+  x-data="{
+    // modal states
+    showRfo: false,
+    editRfo: false,
+    showEsc: false,
+    showSummary: false,
+    showClose: false,
+
+    // AI summary state
+    chronoSummaryText: '',
+    chronoRecommendations: [],
+    isLoadingChronoSummary: false,
+    _summaryAbort: null,
+
+    // form & lainnya
+    escalateLevel: {{ $escalationLevels->first()->level ?? 0 }},
+    rfo: {
+      problem_detail: @js($ticket->problem_detail),
+      action_taken:   @js($ticket->action_taken),
+      preventive_action: @js($ticket->preventive_action)
+    },
+
+    // helpers modal
+    openRfo()  { this.showRfo = true; this.editRfo = false; },
+    closeRfo() { this.showRfo = false; },
+    toggleEditRfo() { this.editRfo = !this.editRfo; },
+    openEsc()  { this.showEsc = true; },
+    closeEsc() { this.showEsc = false; },
+    openClose(){ this.showClose = true; },
+    closeClose(){ this.showClose = false; },
+    openSummary(){ this.showSummary = true; },
+
+    // Generate / regenerate summary + recommendations
+    fetchChronoSummary(force = false) {
+      // jika sudah ada dan tidak force dan tidak loading, skip
+      if (!force && this.chronoSummaryText && !this.isLoadingChronoSummary) return;
+
+      // batalkan request sebelumnya kalau ada
+      if (this._summaryAbort) this._summaryAbort.abort();
+      this._summaryAbort = new AbortController();
+
+      this.isLoadingChronoSummary = true;
+      if (force) {
+        this.chronoSummaryText = '';
+        this.chronoRecommendations = [];
+      }
+
+      fetch(`/api/tickets/{{ $ticket->id }}/chronology-summary`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store',
+        signal: this._summaryAbort.signal,
+      })
+      .then(async (res) => {
+        if (!res.ok) {
+          let msg = 'Gagal memuat ringkasan. Silakan periksa log server.';
+          try { const j = await res.json(); msg = j.summary || j.error || msg; } catch (_) {}
+          throw new Error(msg);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        this.chronoSummaryText = data.summary ?? 'Ringkasan kosong.';
+        this.chronoRecommendations = Array.isArray(data.recommendations) ? data.recommendations : [];
+      })
+      .catch((err) => {
+        this.chronoSummaryText = err?.message || 'Gagal memuat ringkasan. Silakan periksa log server.';
+        this.chronoRecommendations = [];
+      })
+      .finally(() => {
+        this.isLoadingChronoSummary = false;
+        this._summaryAbort = null;
+      });
+    },
+  }"
+  x-effect="
+    // kunci scroll body saat ada modal aktif
+    document.body.classList.toggle('overflow-hidden', showRfo || showEsc || showClose || showSummary)
+  "
+  class="py-8"
 >
   {{-- Page Header --}}
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -197,13 +256,29 @@
 
         {{-- Problem Details & Chronology --}}
         <div class="bg-white shadow rounded-lg overflow-hidden">
+          {{-- Header bar --}}
           <div class="bg-gray-50 px-6 py-5 border-b flex justify-between items-center">
             <h3 class="text-lg font-medium text-gray-900">Problem Details &amp; Chronology</h3>
-            <button
-              @click="showChronoEdit = true"
-              class="text-indigo-600 hover:text-indigo-800 text-sm"
-            >Edit Chronology</button>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                x-data
+                @click="window.dispatchEvent(new CustomEvent('open-chrono-edit'))"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
+              >
+                Edit Chronology
+              </button>
+              <button
+                type="button"
+                @click="showSummary = true; fetchChronoSummary(true)"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+              >
+                <x-heroicon-o-document-text class="h-5 w-5 mr-2 inline" />View Summary
+              </button>
+            </div>
           </div>
+
+          {{-- Timeline list --}}
           <div class="px-6 py-4">
             @if($ticket->updates->isNotEmpty())
               <ul class="-mb-8">
@@ -274,127 +349,126 @@
     </div>
   </div>
 
-  {{-- Edit Chronology Modal --}}
-  <div
-    x-show="showChronoEdit"
-    x-cloak
-    x-transition.opacity
-    @keydown.escape.window="showChronoEdit = false"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-  >
-    <div @click.outside="showChronoEdit = false" class="bg-white rounded-lg overflow-hidden w-full max-w-2xl shadow-lg">
-      @include('tickets.chronology-edit', ['ticket' => $ticket])
-    </div>
-  </div>
-
   {{-- RFO Modal --}}
-  <div
-    x-show="showRfo"
-    x-cloak
-    x-transition.opacity
-    @keydown.escape.window="closeRfo()"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-  >
-    <div @click.outside="closeRfo()" class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-4xl max-h-[90vh] flex flex-col">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h2 class="text-xl font-semibold text-gray-900">Official Incident Report</h2>
-        <button @click="closeRfo()" class="text-gray-400 hover:text-gray-500">
-          <x-heroicon-o-x-mark class="h-6 w-6" />
-        </button>
-      </div>
-      <div class="p-6 overflow-y-auto flex-1">
-        @include('tickets.rfo', ['ticket' => $ticket])
-      </div>
-      <div class="px-6 py-4 border-t bg-gray-50 flex justify-between items-center">
-        <div>
-          <button
-            x-show="!editRfo"
-            @click="toggleEditRfo()"
-            class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
-          >Edit</button>
-          <button
-            x-show="editRfo"
-            @click="toggleEditRfo()"
-            class="px-4 py-2 bg-white text-gray-700 border rounded-md hover:bg-gray-50"
-          >Cancel</button>
-        </div>
-        <form method="POST" action="{{ route('tickets.rfo.pdf', $ticket->id) }}" target="_blank" class="flex space-x-3">
-          @csrf
-          <input type="hidden" name="problem_detail"    x-bind:value="rfo.problem_detail">
-          <input type="hidden" name="action_taken"      x-bind:value="rfo.action_taken">
-          <input type="hidden" name="preventive_action" x-bind:value="rfo.preventive_action">
-          <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-            Download PDF
+  <template x-teleport="body">
+    <div
+      x-show="showRfo"
+      x-cloak
+      x-transition.opacity
+      @keydown.escape.window="closeRfo()"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+    >
+      <div @click.outside="closeRfo()" class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+          <h2 class="text-xl font-semibold text-gray-900">Official Incident Report</h2>
+          <button @click="closeRfo()" class="text-gray-400 hover:text-gray-500" aria-label="Close">
+            <x-heroicon-o-x-mark class="h-6 w-6" />
           </button>
-        </form>
+        </div>
+        <div class="p-6 overflow-y-auto flex-1">
+          @include('tickets.rfo', ['ticket' => $ticket])
+        </div>
+        <div class="px-6 py-4 border-t bg-gray-50 flex justify-between items-center">
+          <div>
+            <button
+              x-show="!editRfo"
+              @click="toggleEditRfo()"
+              class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
+            >Edit</button>
+            <button
+              x-show="editRfo"
+              @click="toggleEditRfo()"
+              class="px-4 py-2 bg-white text-gray-700 border rounded-md hover:bg-gray-50"
+            >Cancel</button>
+          </div>
+          <form method="POST" action="{{ route('tickets.rfo.pdf', $ticket->id) }}" target="_blank" class="flex space-x-3">
+            @csrf
+            <input type="hidden" name="problem_detail"    x-bind:value="rfo.problem_detail">
+            <input type="hidden" name="action_taken"      x-bind:value="rfo.action_taken">
+            <input type="hidden" name="preventive_action" x-bind:value="rfo.preventive_action">
+            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+              Download PDF
+            </button>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
+  </template>
 
   {{-- Escalation Modal --}}
-  <div
-    x-show="showEsc"
-    x-cloak
-    x-transition.opacity
-    @keydown.escape.window="closeEsc()"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-  >
-    <div @click.outside="closeEsc()" class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-md">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h2 class="text-lg font-semibold text-gray-900">Escalate Ticket</h2>
-        <button @click="closeEsc()" class="text-gray-400 hover:text-gray-500">
-          <x-heroicon-o-x-mark class="h-6 w-6" />
-        </button>
-      </div>
-      <form action="{{ route('tickets.escalate', $ticket->id) }}" method="POST">
-        @csrf
-        <div class="p-6 space-y-4">
-          <label class="block text-sm font-medium text-gray-700">Select Escalation Level</label>
-          <select
-            name="level"
-            x-model="escalateLevel"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500"
-          >
-            @foreach($escalationLevels as $lvl)
-              <option value="{{ $lvl->level }}">Level {{ $lvl->level }} – {{ $lvl->label }}</option>
-            @endforeach
-          </select>
+  <template x-teleport="body">
+    <div
+      x-show="showEsc"
+      x-cloak
+      x-transition.opacity
+      @keydown.escape.window="closeEsc()"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+    >
+      <div @click.outside="closeEsc()" class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-md">
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+          <h2 class="text-lg font-semibold text-gray-900">Escalate Ticket</h2>
+          <button @click="closeEsc()" class="text-gray-400 hover:text-gray-500" aria-label="Close">
+            <x-heroicon-o-x-mark class="h-6 w-6" />
+          </button>
         </div>
-        <div class="px-6 py-4 border-t bg-gray-50 text-right">
-          <button type="button" @click="closeEsc()" class="px-4 py-2 bg-white text-gray-700 rounded-md hover:bg-gray-100">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">Escalate</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  {{-- Close Ticket Modal --}}
-  <div
-    x-show="showClose"
-    x-cloak
-    x-transition.opacity
-    @keydown.escape.window="closeClose()"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-  >
-    <div @click.outside="closeClose()" class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-md">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h2 class="text-lg font-semibold text-gray-900">Close Ticket</h2>
-        <button @click="closeClose()" class="text-gray-400 hover:text-gray-500">
-          <x-heroicon-o-x-mark class="h-6 w-6" />
-        </button>
-      </div>
-      <div class="p-6">
-        <p class="text-gray-700">Are you sure you want to close <strong>Ticket #{{ $ticket->ticket_number }}</strong>? This cannot be undone.</p>
-      </div>
-      <div class="px-6 py-4 border-t bg-gray-50 text-right space-x-3">
-        <button @click="closeClose()" class="px-4 py-2 bg-white text-gray-700 rounded-md hover:bg-gray-100">Cancel</button>
-        <form method="POST" action="{{ route('tickets.close', $ticket->id) }}" class="inline">
-          @csrf @method('PATCH')
-          <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Confirm Close</button>
+        <form action="{{ route('tickets.escalate', $ticket->id) }}" method="POST">
+          @csrf
+          <div class="p-6 space-y-4">
+            <label class="block text-sm font-medium text-gray-700">Select Escalation Level</label>
+            <select
+              name="level"
+              x-model="escalateLevel"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              @foreach($escalationLevels as $lvl)
+                <option value="{{ $lvl->level }}">Level {{ $lvl->level }} – {{ $lvl->label }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="px-6 py-4 border-t bg-gray-50 text-right">
+            <button type="button" @click="closeEsc()" class="px-4 py-2 bg-white text-gray-700 rounded-md hover:bg-gray-100">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">Escalate</button>
+          </div>
         </form>
       </div>
     </div>
-  </div>
+  </template>
+
+  {{-- Close Ticket Modal --}}
+  <template x-teleport="body">
+    <div
+      x-show="showClose"
+      x-cloak
+      x-transition.opacity
+      @keydown.escape.window="closeClose()"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+    >
+      <div @click.outside="closeClose()" class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-md">
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+          <h2 class="text-lg font-semibold text-gray-900">Close Ticket</h2>
+          <button @click="closeClose()" class="text-gray-400 hover:text-gray-500" aria-label="Close">
+            <x-heroicon-o-x-mark class="h-6 w-6" />
+          </button>
+        </div>
+        <div class="p-6">
+          <p class="text-gray-700">Are you sure you want to close <strong>Ticket #{{ $ticket->ticket_number }}</strong>? This cannot be undone.</p>
+        </div>
+        <div class="px-6 py-4 border-t bg-gray-50 text-right space-x-3">
+          <button @click="closeClose()" class="px-4 py-2 bg-white text-gray-700 rounded-md hover:bg-gray-100">Cancel</button>
+          <form method="POST" action="{{ route('tickets.close', $ticket->id) }}" class="inline">
+            @csrf @method('PATCH')
+            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Confirm Close</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  {{-- Chronology Edit Modal (event-driven, di-teleport oleh partial) --}}
+  @include('tickets.chronology-edit', ['ticket' => $ticket])
+
+  {{-- Summary Modal (teleport; akan baca chronoSummaryText & chronoRecommendations dari x-data) --}}
+  @include('tickets.summary', ['ticket' => $ticket])
 
 </div>
 @endsection
